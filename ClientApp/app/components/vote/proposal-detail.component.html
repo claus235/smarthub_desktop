@@ -1,0 +1,84 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-proposalDetail">
+    <div class="filter">
+        <button (click)="location.back()">
+            <i class="icon-arrow-back"></i>
+            <span>{{'Back to proposals' | translate}}</span>
+        </button>
+    </div>
+    <div class="leftPanel">
+        <h3>{{proposal?.title}}</h3>
+        <p class="owner">{{'by' | translate}} <strong>{{proposal?.owner}}</strong> {{'on' | translate}} {{proposal?.createdDate | date:'medium'}}</p>
+        <p class="title">{{'Summary' | translate}}</p>
+        <div class="sumary" [innerHTML]="proposal?.summary"></div>
+        <p class="title">{{'Description' | translate}}</p>
+        <div [innerHTML]="proposal?.description"></div>
+    </div>
+    <div class="rightPanel">
+        <div class="box box-1">
+            <div class="box-title">
+                <i class="icon-question"></i>
+                <span>{{'Requested Amount'}}</span>
+            </div>
+            <div class="box-body">
+                <div class="amountLeftInfo">
+                    <span class="smartcash-label">SmartCash</span>
+                    <span class="smartcash"><span>Σ</span> {{proposal?.amountSmart | number:'1.2-4'}}</span>
+                </div>
+                <div class="amountRightInfo">
+                    <p><strong>{{'Total USD' | translate}}</strong><span>{{proposal?.amountUSD | number:'1.2-4'}}</span></p>
+                    <p><strong>{{'Bitcoin' | translate}}</strong><span>{{proposal?.amountBTC | number:'1.2-8' }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="box box-2">
+            <div class="box-title">
+                <i class="icon-thumbs-up-down"></i>
+                <span>Votes</span>
+            </div>
+            <div class="box-body">
+                <div class="votes">
+                    <div class="yes">
+                        <span class="percent">
+                            <i class="icon-thumbs-up"></i>
+                            <span>{{proposal?.percentYes | number:'2.1-2'}}%</span>
+                        </span>
+                        <span class="vote"><strong>{{'Yes' | translate}}</strong> <span>({{proposal?.voteYes}})</span></span>
+                        <div class="progressBar"><span [style.width.%]="proposal?.percentYes"></span></div>
+                    </div>
+                    <div class="no">
+                        <span class="percent">
+                            <i class="icon-thumbs-down"></i>
+                            <span>{{proposal?.percentNo | number:'2.1-2'}}%</span>
+                        </span>
+                        <span class="vote"><strong>{{'No' | translate}}</strong> <span>({{proposal?.voteNo}})</span></span>
+                        <div class="progressBar"><span [style.width.%]="proposal?.percentNo"></span></div>
+                    </div>
+                    <div class="abstain">
+                        <span class="percent">
+                            <i class="icon-interrogation"></i>
+                            {{proposal?.percentAbstain | number:'2.1-2'}}%
+                        </span>
+                        <span class="vote"><strong>{{'Abstain' | translate}}</strong> <span>({{proposal?.voteAbstain}})</span></span>
+                        <div class="progressBar"><span [style.width.%]="proposal?.percentAbstain"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box box-3">
+            <div class="box-title">
+                <i class="icon-clock-history"></i>
+                <span>{{'Votes deadline' | translate}}</span>
+            </div>
+            <div class="box-body">
+                <p><strong>{{'Created Date' | translate}}: </strong>{{proposal?.createdDate | date:'medium'}}</p>
+                <p><strong>{{'Voting Deadline' | translate}}: </strong>{{proposal?.votingDeadline | date:'medium'}}</p>
+            </div>
+        </div>
+        <div class="buttons" *ngIf="proposal?.status === 'Open'">
+            <a class="btn btn-vote" [routerLink]="['/proposal/vote/' + proposal.url]">{{'Vote' | translate}}</a>
+        </div>
+    </div>
+</div>

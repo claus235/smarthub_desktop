@@ -1,0 +1,93 @@
+.btn-action {
+    position: relative;
+    top: unset;
+    right: unset;
+    padding: 0;
+}
+
+.modal-body table {
+    width: 100%
+}
+
+.modal-body tbody tr {
+    width: 100%;
+    box-shadow: inset 0 -1px 0 0 #F5F5F6
+}
+
+.modal-footer {
+    background-color: #F2F4F6;
+    overflow: hidden;
+    height: 20%;
+    padding: 30px;
+    text-align: right;
+}
+
+    .modal-footer .btn {
+        position: unset;
+        top: unset;
+        right: unset;
+        padding: 15px 20px;
+    }
+
+td.contact {
+    padding: 0 30px;
+    font-size: 15px;
+    font-weight: 600;
+    width: 80%;
+    display: table-cell;
+}
+
+td.btn {
+    text-align: right;
+    width: 20%;
+    display: table-cell;
+    padding: 0 30px;
+    position: relative;
+}
+
+.btn-select {
+    height: 36px;
+    width: 80px;
+    line-height: normal;
+    display: inline-block;
+}
+
+.modal-title {
+    float: left;
+    width: 70%;
+    margin: 0;
+    clear: right;
+}
+
+    .modal-title + a {
+        float: left;
+        width: 30%;
+        color: #278EF6;
+        font-family: "Source Sans Pro", sans-serif;
+        font-size: 15px;
+        text-align: right;
+    }
+
+.modal-header {
+    position: relative;
+}
+
+    .modal-header .close {
+        float: right;
+        margin: 0 0 15px 0;
+        display: block;
+        width: 10%;
+        background: none;
+        border: 0;
+        text-align: right;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+.btn-yellow {
+    background-color: #F4B517;
+}
+
+    .btn-yellow:hover {
+        background-color: #d49d14;
+    }

@@ -1,0 +1,37 @@
+<button type="button" class="btn btn-action" data-toggle="modal" data-target="#modalWallets">
+    <i class="icon-account-balance-wallet"></i>
+</button>
+<div class="modal animated fadeIn" id="modalWallets" role="dialog" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{_shared.wallet?.length}} {{'Wallets' | translate}}</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tbody *ngIf="_shared.wallet && _.size(_shared?.wallet) > 0">
+                        <tr *ngFor="let wallet of getWallets()">
+                            <td class="contact">{{wallet.displayName}}</td>
+                            <td class="btn">
+                                <button class='btn btn-select btn-yellow' (click)='selectWallet(wallet)'>
+                                    {{'Select' | translate}}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="!_shared.wallet || _.size(_shared?.wallet) == 0">
+                        <tr>
+                            <td>
+                                <div class="alert alert-warning">{{'No wallets found.' | translate}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer text-right">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'Cancel' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

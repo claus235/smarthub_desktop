@@ -1,0 +1,58 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-profile">
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm" autocomplete="off">
+        <div class="card">
+            <span class="cardNumber">
+                <i class="icon-person"></i>
+            </span>
+            <span class="cardTitle">{{'Profile' | translate}}</span>
+            <div class="form-input">
+                <label class="control-label" for="firstName">{{'First Name (Optional)' | translate}}:</label>
+                <input class="form-control" id="firstName" name="firstName" type="text" value="" placeholder="{{'First Name' | translate}}"
+                       [(ngModel)]="userInfo.firstName" #firstName="ngModel" pattern="[a-zA-Z\s]+$" autocomplete="off" />
+                <div [hidden]="firstName.valid || firstName.pristine" class="alert alert-danger">
+                    {{'A valid First Name is required.' | translate}}
+                </div>
+            </div>
+            <div class="form-input">
+                <label class="control-label" for="lastName">{{'Last Name (Optional)' | translate}}:</label>
+                <input class="form-control" id="lastName" type="text" value="" placeholder="{{'Last Name' | translate}}"
+                       [(ngModel)]="userInfo.lastName" name="lastName" #lastName="ngModel" pattern="[a-zA-Z\s]+$"
+                       autocomplete="off" />
+                <div [hidden]="lastName.valid || lastName.pristine" class="alert alert-danger">
+                    {{'A valid Last Name is required.' | translate}}
+                </div>
+            </div>
+            <div class="form-input">
+                <label class="control-label" for="email">{{'Email (Optional)' | translate}}:</label>
+                <input class="form-control" id="email" type="email" value="" placeholder="{{'Email' | translate}}"
+                       [(ngModel)]="userInfo.email" name="email" #email="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                       autocomplete="off" />
+                <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+                    {{'A valid email number is required.' | translate}}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <span class="cardNumber">
+                <i class="icon-person"></i>
+            </span>
+            <span class="cardTitle">{{'Enter your Password to update profile' | translate}}</span>
+            <div class="form-input">
+                <label class="control-label" for="userKey">{{'Password' | translate}}:</label>
+                <input class="form-control" id="userKey" type="password" value="" [(ngModel)]="userInfo.userKey" name="userKey" #recoveryKey="ngModel" autocomplete="off" required />
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="!registerForm.form.valid || inProgress">
+                {{'Update Profile' | translate}}
+            </button>
+            <div class="alert-box alert-success" role="alert" *ngIf="createResponse && createResponse.isValid">
+                <strong>{{'Response' | translate}}:</strong> {{'Your profile has been updated, await until we redirect you.' | translate}}
+            </div>
+            <div class="alert-box alert-danger" role="alert" *ngIf="createResponse && !createResponse.isValid">
+                <strong>{{'Error' | translate}}:</strong> {{ createResponse?.error?.message | translate}}
+            </div>
+        </div>
+    </form>
+</div>

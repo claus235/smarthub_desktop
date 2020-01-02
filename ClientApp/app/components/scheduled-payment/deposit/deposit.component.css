@@ -1,0 +1,74 @@
+.card {
+    padding: 30px;
+}
+
+.cardNumber {
+    display: block;
+    height: 48px;
+    width: 48px;
+    border: 3px solid #F4B517;
+    background-color: #FFFFFF;
+    border-radius: 100%;
+    text-align: center;
+    color: #F4B517;
+    font-size: 21px;
+    font-weight: 600;
+    padding: 6px 10px;
+    margin: 0 auto;
+}
+
+.cardTitle {
+    display: block;
+    color: #272D3D;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 23px;
+    margin: 20px auto 0;
+    text-align: center;
+    word-break: break-word;
+}
+
+.cardSubTitle {
+    display: block;
+    margin: 5px auto 30px;
+    text-align: center;
+    font-size: 14px
+}
+
+.walletInfoWrapper {
+    border-radius: 7px;
+    border: dashed 3px #e5e8ec;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-break: break-all
+}
+
+    .walletInfoWrapper .displayName {
+        color: #6C7C93;
+        font-size: 14px;
+        text-align: center;
+        display: block;
+    }
+
+    .walletInfoWrapper .address {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2ea2f8;
+        display: block
+    }
+
+    .walletInfoWrapper .copy {
+        color: #2ea2f8;
+        font-size: 18px;
+        height: unset;
+        line-height: normal;
+    }
+
+.qrcode-img {
+    display: block;
+    width: 100%;
+    margin: 20px auto;
+    max-width: 190px
+}

@@ -1,0 +1,84 @@
+.card {
+    padding: 30px 15px;
+}
+
+.cardTitle {
+    display: block;
+    color: #272D3D;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 23px;
+    margin: 20px auto;
+    text-align: center;
+    word-break: break-word;
+}
+
+.btn-primary {
+    background: #F4B517;
+    display: block;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+    .btn-primary[disabled] {
+        background-color: #f4b51791;
+        cursor: default;
+    }
+
+.form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-input {
+    flex-basis: 100%;
+    padding: 0 15px;
+}
+
+.form-input-50 {
+    flex-basis: 50%;
+}
+
+.transaction-date input {
+    padding-left: 30px;
+}
+
+.icon-calendar {
+    position: absolute;
+    bottom: 13px;
+    left: 15px;
+    color: #80929c;
+}
+
+input#toAddress {
+    padding-right: 120px;
+}
+
+.button-group {
+    position: absolute;
+    top: 30px;
+    right: 15px;
+    display: flex;
+    justify-content: space-between;
+    width: 120px;
+}
+
+    .button-group button {
+        position: unset;
+        right: unset;
+        bottom: unset;
+        background: unset;
+        border: unset;
+        cursor: unset;
+        height: unset;
+        line-height: unset;
+    }
+
+app-spinner {
+    width: 100%;
+}
+
+input#password + .button-group {
+    width: 60px;
+}

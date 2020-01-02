@@ -1,0 +1,39 @@
+<div class="card" *ngIf="!configuring">
+    <div class="cardNumber">
+        <i class="icon-calendar"></i>
+    </div>
+    <h2 class="cardTitle">{{'Scheduled Payments' | translate}}</h2>
+    <p class="cardSubTitle">
+        {{'By using the scheduled payments wallet, you agree that it will send funds on your behalf. If you schedule payments based on a fiat (USD) amount, you may need to add more SmartCash if the price changes in order to complete the schedule.' | translate}}
+    </p>
+    <button class="btn btn-primary"
+            (click)="configuring = true">
+        {{'Click here to configure' | translate}}
+    </button>
+</div>
+
+<form *ngIf="configuring"
+      class="card"
+      (ngSubmit)="configureScheduledPayment()"
+      #sendForm="ngForm">
+    <div class="cardNumber">
+        <i class="icon-calendar"></i>
+    </div>
+    <h2 class="cardTitle">
+        {{'Configuring Scheduled Payment' | translate}}
+    </h2>
+    <div class="form-input">
+        <label for="password">
+            <span>{{'Password' | translate}}</span>
+            <span class="required">*</span>
+        </label>
+        <input type="password"
+               id="password"
+               name="password"
+               required
+               [(ngModel)]="configureRequest.userKey" />
+    </div>
+    <button class="btn btn-primary">
+        {{'Configure' | translate}}
+    </button>
+</form>

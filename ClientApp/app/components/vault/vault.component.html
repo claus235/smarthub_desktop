@@ -1,0 +1,256 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-vault">
+    <app-spinner *ngIf="_spinner.inProgress"></app-spinner>
+    <div *ngIf="response && !response.isValid" class="card" role="alert">
+        <div class="alert-box alert-danger">
+            {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
+        </div>
+    </div>
+    <div *ngIf="response && response.isValid && !isUpdate && !isWithDraw" class="card" role="alert">
+        <div class="alert-box alert-success">
+            {{'Status' | translate}}: {{'Your SmartVault has been created, please wait while we redirect you.' | translate}}
+        </div>
+    </div>
+    <div *ngIf="response && response.isValid && isUpdate" class="card" role="alert">
+        <div class="alert-box alert-success">
+            {{'Status' | translate}}: {{'Your SmartVault has been modified' | translate}}
+        </div>
+    </div>
+    <div *ngIf="response && response.isValid && isWithDraw" class="card" role="alert">
+        <div class="alert-box alert-success">
+            {{'Status' | translate}}: {{'Your withdrawal has been confirmed, please wait while we redirect you.' | translate}}
+        </div>
+    </div>
+    <div class="card card-1" *ngIf="!response && !hasSmartVault && !_spinner.inProgress && !vaultData">
+        <div class="cardNumber">
+            <i class="icon-vault"></i>
+        </div>
+        <h2 class="cardTitle">{{'SmartVault' | translate}}</h2>
+        <p class="cardSubTitle">
+            {{
+'A vault can receive funds like a normal wallet, but can also prevent stored funds from being immediately
+      withdrawn by adding optional security steps' | translate
+            }}
+        </p>
+        <button class="btn btn-success" [disabled]="!hasEmail" (click)="createSmartVault = true">{{'Create a SmartVault' | translate}}</button>
+        <div class="email-notice" *ngIf="!hasEmail">
+            <span>
+                {{'To create a SmartVault you need setup a email.' | translate}}
+                <a [routerLink]="['/profile']" [queryParams]="{returnUrl:'vault'}">{{'Click here to update your profile.' | translate}}</a>
+            </span>
+        </div>
+    </div>
+    <div class="card vaultdata" *ngIf="hasSmartVault && vaultData">
+        <span class="cardNumber">
+            <i class="icon-vault"></i>
+        </span>
+        <h2 class="cardTitle">{{'SmartVault' | translate}}</h2>
+        <span class="cardSubTitle">{{'Balance' | translate}} Σ {{vaultData?.balance| number:'1.2-4'}}</span>
+        <div class="buttons">
+            <button class="btn btn-primary btn-outline" (click)="showDeposit()" [ngClass]="{'active': isDeposit}">
+                <i class="icon-price-min"></i>
+                <span>{{'Deposit' | translate}}</span>
+            </button>
+            <button class="btn btn-primary btn-outline" (click)="showWithDraw()" [ngClass]="{'active': isWithDraw}">
+                <i class="icon-price-max"></i>
+                <span>{{'Withdraw' | translate}}</span>
+            </button>
+            <button class="btn btn-primary btn-outline" (click)="showSettings()" [ngClass]="{'active': isUpdate}">
+                <i class="icon-settings"></i>
+                <span>{{'Settings' | translate}}</span>
+            </button>
+        </div>
+    </div>
+    <div class="card" *ngIf="!response && !hasSmartVault && createSmartVault">
+        <span class="cardNumber">
+            <i class="icon-vault"></i>
+        </span>
+        <h2 class="cardTitle">{{'Create SmartVault' | translate}}</h2>
+        <form (ngSubmit)="create()" #createNgForm="ngForm">
+            <div class="form-input">
+                <label for="address">
+                    {{'Password' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="address" name="userKey" [type]="inputTypePassword" [(ngModel)]="createForm.userKey" required #userKey="ngModel" />
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='password'" title="Show Password">
+                    <i class="icon-eye"></i>
+                </button>
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='text'" title="Hide Password ">
+                    <i class="icon-eye"></i>
+                </button>
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="!createNgForm.form.valid">
+                <span>{{'Create' | translate}}</span>
+            </button>
+        </form>
+    </div>
+    <div class="card" *ngIf="hasSmartVault && isWithDraw">
+        <span class="cardNumber">
+            <i class="icon-price-max"></i>
+        </span>
+        <h2 class="cardTitle">{{'Withdraw' | translate}}</h2>
+        <form (ngSubmit)="withdraw()" #withdrawNgForm="ngForm">
+            <div class="form-input">
+                <label for="toAddress">
+                    {{'SmartCash Address' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="toAddress" name="toAddress" type="text" [(ngModel)]="withdrawForm.toAddress" required #toAddress="ngModel" [disabled]="true" placeholder="{{'Select one of your wallets' | translate}}" (click)="toggleWalletModal" />
+                <span class="input-click" data-toggle="modal" data-target="#modalWallets"></span>
+                <div class="button-group">
+                    <button type="button" class="btn" data-toggle="modal" data-target="#modalWallets">
+                        <i class="icon-account-balance-wallet"></i>
+                    </button>
+                </div>
+                <small *ngIf="this.selectedSendTo">{{'Send to'}}: {{this.selectedSendTo?.name || this.selectedSendTo?.displayName}} </small>
+            </div>
+            <div class="form-input">
+                <label for="amount">
+                    {{'Amount' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="amount" name="amount" type="text" [(ngModel)]="withdrawForm.amount" required #amount="ngModel" (ngModelChange)="calculateAmountWithFee($event)" mask='0*.00000000' [dropSpecialCharacters]="false" />
+            </div>
+            <div class="form-input input-amoutWithFee">
+                <label for="amountWithFee">
+                    {{'Amount with fee in SMART' | translate}}<span>({{withdrawForm.amount}} + {{transactionExtended.fee || '0.0'}})</span>:
+                </label>
+                <input id="amountWithFee" type="text" [(ngModel)]="transactionExtended.amountWithFee" name="amountWithFee" #amount="ngModel" required autocomplete="off" disabled />
+                <span [hidden]="hasBalance" class="alert alert-danger">{{'This amount exceeds your balance.' | translate}}</span>
+            </div>
+            <div class="form-input">
+                <label for="userKey">
+                    {{'Password' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="userKey" name="userKey" [type]="inputTypePassword" [(ngModel)]="withdrawForm.userKey" required
+                       #userKey="ngModel" />
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='password'" title="Show Password">
+                    <i class="icon-eye"></i>
+                </button>
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='text'" title="Hide Password ">
+                    <i class="icon-eye"></i>
+                </button>
+            </div>
+            <div class="form-input" *ngIf="_shared.user.is2FAEnabled && _shared.user.require2faToSend">
+                <label for="2fa">
+                    {{'Two FA Code' | translate}}:
+                    <span class="required">*</span>
+                    <span [hidden]="code.valid || code.pristine" class="alert alert-danger">{{'A valid code is required.' | translate}}</span>
+                </label>
+                <input id="2fa" name="code" type="password" value="" [(ngModel)]="withdrawForm.code" #code="ngModel" autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="!withdrawNgForm.form.valid">
+                <span>{{'Withdraw' | translate}}</span>
+            </button>
+        </form>
+    </div>
+    <div class="card" *ngIf="hasSmartVault && isUpdate">
+        <span class="cardNumber">
+            <i class="icon-settings"></i>
+        </span>
+        <h2 class="cardTitle">{{'Settings' | translate}}</h2>
+        <form (ngSubmit)="update()" #updateNgForm="ngForm">
+            <div class="form-input">
+                <label for="timeForSend">
+                    {{'Time duration before sending' | translate}} ({{'in hours' | translate}})
+                    <span class="required">*</span>
+                </label>
+                <input id="timeForSend" name="timeForSend" type="text" pattern="\d*" maxlength="2" [(ngModel)]="updateForm.timeForSend" required #timeForSend="ngModel" />
+                <span *ngIf="timeForSend.errors?.pattern" class="alert alert-danger">{{'Invalid value' | translate}}</span>
+            </div>
+            <div class="form-input">
+                <label for="maximumValue">
+                    {{'Maximum amount per send' | translate}} ({{'in SMART' | translate}})
+                    <span class="required">*</span>
+                </label>
+                <input id="maximumValue" name="maximumValue" type="text" [(ngModel)]="updateForm.maximumValue" required #maximumValue="ngModel" />
+            </div>
+            <div class="form-input">
+                <label for="address">
+                    {{'Password' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="address" name="userKey" [type]="inputTypePassword" [(ngModel)]="updateForm.userKey" required
+                       #userKey="ngModel" />
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='password'" title="Show Password">
+                    <i class="icon-eye"></i>
+                </button>
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='text'" title="Hide Password ">
+                    <i class="icon-eye"></i>
+                </button>
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="!updateNgForm.form.valid">
+                <span>{{'Update Settings' | translate}}</span>
+            </button>
+        </form>
+    </div>
+    <div class="card" *ngIf="hasSmartVault && isDeposit">
+        <span class="cardNumber">
+            <i class="icon-price-min"></i>
+        </span>
+        <h2 class="cardTitle">{{'Deposit' | translate}}</h2>
+        <p class="cardSubTitle">{{'Use the address below to deposit SMART in your Vault.' | translate}}</p>
+        <div class="walletInfoWrapper">
+            <span class="address">{{vaultData?.walletAddress}}</span>
+            <button class="btn copy" type="button" [attr.data-clipboard-text]="vaultData?.walletAddress">
+                <i class=" icon-content-copy"></i>
+            </button>
+        </div>
+        <img class="qrcode-img" src="https://qr.smartcash.cc/?address={{vaultData?.walletAddress}}" alt="QR Code">
+    </div>
+
+    <div class="modal animated fadeIn " id="modalQrCode" role="dialog" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" (click)="stopQR();">&times;</button>
+                    <h4 class="modal-title">{{'Scan your QR CODE' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe scrolling="no" id="iQR" src="" class="iframeQR"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="stopQR();">{{'Cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal animated fadeIn" id="modalWallets" role="dialog" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{_shared.wallet?.length - 1}} {{'Wallets' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody *ngIf="_shared.wallet && _.size(_shared.wallet) > 0">
+                            <tr *ngFor="let wallet of getWallets()">
+                                <td class="contact">{{wallet.displayName}}</td>
+                                <td class="btn">
+                                    <button class='btn btn-select btn-yellow' (click)='selectWallet(wallet)'>
+                                        {{'Select' | translate}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="!_shared.wallet || _.size(_shared.wallet) == 0">
+                            <tr>
+                                <td>
+                                    <div class="alert alert-warning">{{'No wallets found.' | translate}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

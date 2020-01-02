@@ -1,0 +1,69 @@
+<span class="label" *ngIf="transaction?.confirmationDisplay">{{"Confirmations" | translate}}</span>
+<span class="value" *ngIf="transaction?.confirmationDisplay">{{transaction?.confirmationDisplay}}</span>
+
+<span class="label" *ngIf="transaction?.confirmationMinutes">{{"Average processing time" | translate}}</span>
+<span class="value" *ngIf="transaction?.confirmationMinutes">{{transaction?.confirmationMinutes}}</span>
+
+<span class="label" *ngIf="transaction?.currencyFrom">{{"Coin type" | translate}}</span>
+<span class="value" *ngIf="transaction?.currencyFrom">{{transaction?.currencyFrom}}</span>
+
+<span class="label" *ngIf="transaction?.amountFrom">{{"Amount from" | translate}}</span>
+<span class="value" *ngIf="transaction?.amountFrom">{{transaction?.amountFrom }}</span>
+
+<span class="label" *ngIf="transaction?.amountTo">{{"Amount to" | translate}}</span>
+<span class="value" *ngIf="transaction?.amountTo">{{transaction?.amountTo | number:'1.2-4'}}</span>
+
+<span class="label" *ngIf="transaction?.expectedAmount">{{"Expected amount" | translate}}</span>
+<span class="value" *ngIf="transaction?.expectedAmount">{{transaction?.expectedAmount | number:'1.2-8'}}</span>
+
+<span class="label" *ngIf="transaction?.payinHash">{{"Pay in hash" | translate}}</span>
+<span class="value" *ngIf="transaction?.payinHash && transaction?.payinHashUrl">
+    <a [href]="transaction?.payinHashUrl" target="_blank">{{transaction?.payinHash}}</a>
+</span>
+<span class="value" *ngIf="transaction?.payinHash && !transaction?.payinHashUrl">{{transaction?.payinHash}}</span>
+
+<span class="label" *ngIf="transaction?.payoutHash">{{"Pay out hash" | translate}}</span>
+<span class="value" *ngIf="transaction?.payoutHash && transaction?.payoutHashUrl">
+    <a [href]="transaction?.payoutHashUrl" target="_blank">{{transaction?.payoutHash}}</a>
+</span>
+<span class="value" *ngIf="transaction?.payoutHash && !transaction?.payoutHashUrl">{{transaction?.payoutHash}}</span>
+
+<span class="label" *ngIf="transaction?.payinAddress">{{"Pay in address" | translate}}</span>
+<span class="value" *ngIf="transaction?.payinAddress && transaction?.payinAddressUrl">
+    <a [href]="transaction?.payinAddressUrl" target="_blank">{{transaction?.payinAddress}}</a>
+</span>
+<span class="value" *ngIf="transaction?.payinAddress && !transaction?.payinAddressUrl">{{transaction?.payinAddress}}</span>
+
+<span class="label" *ngIf="transaction?.payoutAddress">{{"Pay out address" | translate}}</span>
+<span class="value" *ngIf="transaction?.payoutAddress && transaction?.payoutAddressUrl">
+    <a [href]="transaction?.payoutAddressUrl" target="_blank">{{transaction?.payoutAddress}}</a>
+</span>
+<span class="value" *ngIf="transaction?.payoutAddress && !transaction?.payoutAddressUrl">{{transaction?.payoutAddress}}</span>
+
+<span class="label" *ngIf="transaction?.refundAddress">{{"Refund ddress" | translate}}</span>
+<span class="value" *ngIf="transaction?.refundAddress">{{transaction?.refundAddress}}</span>
+
+<span class="label" *ngIf="transaction?.userMessage">{{"Message" | translate}}</span>
+<span class="value" *ngIf="transaction?.userMessage" [innerHTML]="transaction?.userMessage"></span>
+
+<span class="label" *ngIf="transaction?.transactionId">{{"Order ID" | translate}}</span>
+<span class="value" *ngIf="transaction?.transactionId">
+    {{transaction?.transactionId}}
+    <button class="btn btn-cancel"
+            *ngIf="transaction?.status === 'new' || transaction?.status === 'awaiting'"
+            (click)="toggleDelete()">
+        <i class="icon-delete"></i>
+        {{'Cancel' | translate}}
+    </button>
+</span>
+<span class="delete">
+    <span class="text">{{'Are you sure you want to cancel this transaction?' | translate}}</span>
+    <button (click)="deleteTransaction(transaction?.transactionId);toggleDelete()">
+        <i class="icon-thumbs-up"></i>
+        {{'Yes' | translate}}
+    </button>
+    <button (click)="toggleDelete()">
+        <i class="icon-thumbs-down"></i>
+        {{'No' | translate}}
+    </button>
+</span>

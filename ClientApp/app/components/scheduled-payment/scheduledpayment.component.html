@@ -1,0 +1,29 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-schedule">
+    <div class="alert-box alert-warning text-center" *ngIf="!_shared.user.email">
+        {{'An Email address must be setup on this account to create scheduled payments.' | translate}}
+        <a routerLink="/profile">{{'Click here to setup' | translate}}</a>
+    </div>
+    <configure-scheduled-payment *ngIf="!wallet"></configure-scheduled-payment>
+    <div class="card vaultdata" *ngIf="wallet">
+        <span class="cardNumber">
+            <i class="icon-calendar"></i>
+        </span>
+        <h2 class="cardTitle">{{'Scheduled Payments' | translate}}</h2>
+        <span class="cardSubTitle">{{'Balance' | translate}} Σ {{wallet?.balance| number:'1.2-4'}}</span>
+        <div class="button-group">
+            <button class="btn btn-primary btn-outline" (click)="showDeposit()">
+                <span>{{'Deposit' | translate}}</span>
+            </button>
+            <button class="btn btn-primary btn-outline" (click)="showCreateScheduled()">
+                <span>{{'Create Schedule' | translate}}</span>
+            </button>
+            <button class="btn btn-primary btn-outline" (click)="showCreateRecurring()">
+                <span>{{'Create Recurring' | translate}}</span>
+            </button>
+        </div>
+    </div>
+    <ndc-dynamic *ngIf="wallet" [ndcDynamicComponent]="component" [ndcDynamicInputs]="inputs"></ndc-dynamic>
+</div>

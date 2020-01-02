@@ -1,0 +1,43 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-cards">
+    <div class="wallets currentWallet">
+        <button class="wallet" (click)="showWallets = !showWallets">
+            <div class="icon_address icon_address-{{currentWalletIndex}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{_card?.currentWallet?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{_card?.currentWallet?.displayName}}</span>
+            <span class="address">{{_card?.currentWallet?.address}}</span>
+        </button>
+    </div>
+    <div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}">
+        <button class="wallet"
+                *ngFor="let w of getWallets(); let _index = index"
+                (click)="setWallet(w, _index)"
+                [ngClass]="{'actived': _card.currentWallet.address === w.address}">
+            <div class="icon_address icon_address-{{_index}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{w.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{w.displayName}}</span>
+            <span class="address">{{w.address}}</span>
+            <i class="icon-bullet-circle-stroke-unchecked ico_normal"></i>
+            <i class="icon-adjust ico_activated"></i>
+        </button>
+    </div>
+    <div class="page-wrapper">
+        <app-spinner></app-spinner>
+        <div class="card no-card"
+             (click)="_card.showEditCreate = true"
+             *ngIf="_card?.noHasCard && !_card?.showEditCreate && !_spinner.inProgress">
+            <span class="cardNumber"><i class="icon-card"></i></span>
+            <span class="cardTitle">{{'Your wallet doesn\'t have a card.' | translate}}</span>
+            <span>{{'Click here to create one' | translate}}</span>
+        </div>
+        <app-cards-preview *ngIf="!_card.noHasCard && !_card.showEditCreate && !_card._showCardApp && !_spinner.inProgress"></app-cards-preview>
+        <app-cards-create *ngIf="_card.showEditCreate"></app-cards-create>
+        <app-card-cardapp *ngIf="_card._showCardApp"></app-card-cardapp>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+{
+  "password": "sample string 1",
+  "confirmPassword": "sample string 2",
+  "userDescription": "sample string 3",
+  "recoveryKey": "sample string 4",
+  "isPhoneVerified": true,
+  "dob": "2017-09-13T02:10:34.2947535+00:00",
+  "notifications": 8,
+  "userId": 9,
+  "firstName": "sample string 10",
+  "lastName": "sample string 11",
+  "username": "sample string 12",
+  "photo": "sample string 15",
+  "facebookId": "sample string 16",
+  "twitterId": "sample string 17",
+  "phone": "sample string 18",
+  "countryCode": "sample string 20",
+  "timeZone": "sample string 21"
+}

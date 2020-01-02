@@ -1,0 +1,79 @@
+<div *ngIf="response && !response.isValid" class="card" role="alert">
+    <div class="alert-box alert-danger">
+        {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
+    </div>
+</div>
+<div *ngIf="response && response.isValid && !isUpdate" class="card" role="alert">
+    <div class="alert-box alert-success">
+        {{'Status' | translate}}: {{'Your card has been created' | translate}}
+    </div>
+</div>
+<div *ngIf="response && response.isValid && isUpdate" class="card" role="alert">
+    <div class="alert-box alert-success">
+        {{'Status' | translate}}: {{'Your card has been modified' | translate}}
+    </div>
+</div>
+<div class="card card-create" *ngIf="!response?.isValid">
+    <span class="cardNumber"><i class="icon-card"></i></span>
+    <span class="cardTitle" *ngIf="!isUpdate">{{'Create a new card' | translate}}</span>
+    <span class="cardTitle" *ngIf="isUpdate">{{'Update card settings' | translate}}</span>
+    <form (ngSubmit)="isUpdate ? updateCard(): createCard()" #formUpdateCreate="ngForm">
+        <div class="form-input">
+            <label for="name"><span>{{'Name' | translate}}:</span><span class="required">*</span></label>
+            <input id="name" type="text" [(ngModel)]="cardData.name" name="name" #name="ngModel" required maxlength="24">
+        </div>
+        <div class="form-input" *ngIf="!isUpdate">
+            <label for="email"><span>{{'Email' | translate}}:</span><span class="required">*</span></label>
+            <input id="email" type="email" [(ngModel)]="cardData.email" name="email" #email="ngModel" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+            <span [hidden]="email.valid || email.pristine" class="alert alert-danger">
+                {{'Enter a valid email.' | translate}}
+            </span>
+        </div>
+        <div class="form-input">
+            <label for="countries"><span>{{'Accepted only in' | translate}}:</span></label>
+            <div class="input-autocomplete">
+                <select [(ngModel)]="findCountry" name="_findCountry" #_findCountry="ngModel" (change)="selectCountrie(findCountry)">
+                    <option [value]="country.name" *ngFor="let country of getCountries();trackBy: trackByFn">{{country.name}}</option>
+                </select>
+            </div>
+            <div class="countryList">
+                <div *ngFor="let country of cardData.countries" class="country">
+                    <span>{{country}}</span>
+                    <span class="close" (click)="removeCountry(country)">X</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-input">
+            <label for="currency"><span>{{'Currency' | translate}}:</span><span class="required">*</span></label>
+            <div class="input-autocomplete">
+                <input placeholder="{{'Please type and select a currency' | translate}}" type="text" [(ngModel)]="findCurrency" name="_findCurrency" #_findCurrency="ngModel">
+                <span [hidden]="currencyValidator" class="alert alert-danger">
+                    {{'Currency doesn\'t exists in list' | translate}}
+                </span>
+                <div class="list" *ngIf="showAutoCompleteCurrency">
+                    <div *ngFor="let currency of getCurrencies();trackBy: trackByFn" (click)="selectCurrency(currency)">{{currency}}</div>
+                </div>
+            </div>
+            <div class="countryList" *ngIf="cardData.daily.currency !== ''">
+                <div class="country">
+                    <span>{{cardData.daily.currency}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-input">
+            <label for="maximum"><span>{{'Maximum per day' | translate}} ({{'Daily Limit' | translate}} {{cardData.daily.currency}}):</span><span class="required">*</span></label>
+            <input id="maximum" type="text" pattern="^(0|[1-9][0-9]*)$" maxlength="7" [(ngModel)]="cardData.daily.maximum" name="maximum" #maximum="ngModel" required />
+        </div>
+        <div class="form-input edit">
+            <label for="pin"><span>{{'Pin' | translate}}:</span><span class="required" *ngIf="!isUpdate">*</span></label>
+            <input id="pin" type="password" pattern="^(0|[1-9][0-9]*)$" minlength="4" maxlength="4" placeholder="****" disabled="disabled" *ngIf="!editPin && isUpdate">
+            <input id="pin" type="password" pattern="^(0|[1-9][0-9]*)$" minlength="4" maxlength="4" [(ngModel)]="cardData.pin" name="pin" #pin="ngModel" *ngIf="editPin || (!editPin && !isUpdate)" [required]="!editPin && !isUpdate ? true : undefined">
+            <button type="button" class="icon-edit" (click)="editPin = !editPin" *ngIf="isUpdate"></button>
+        </div>
+        <div class="buttons">
+            <button type="button" class="btn btn-secondary" (click)="_card.showEditCreate = false" style="max-width:30%">{{'Cancel' | translate}}</button>
+            <button type="submit" class="btn btn-success" *ngIf="!isUpdate" [disabled]="!formUpdateCreate.form.valid">{{'Create' | translate}}</button>
+            <button type="submit" class="btn btn-success" *ngIf="isUpdate" [disabled]="!formUpdateCreate.form.valid">{{'Update Infos' | translate}}</button>
+        </div>
+    </form>
+</div>

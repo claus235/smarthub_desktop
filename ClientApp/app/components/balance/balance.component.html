@@ -1,0 +1,8 @@
+<div class="balance" *ngIf="_shared.wallet && _shared.isAuthenticated">
+    <span class="smartcash">Σ {{ _.sumBy(this._shared.wallet, 'balance') | number:'1.2-4'}}</span>
+    <span class="currency" *ngFor="let price of currentPrice | async">
+        <span class="usd" *ngIf="price && _shared.wallet">
+            $ {{_.sumBy(this._shared.wallet, 'balance') * price.price_usd | number:'1.2-4'}}
+        </span>
+    </span>
+</div>

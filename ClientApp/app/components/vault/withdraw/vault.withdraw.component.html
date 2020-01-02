@@ -1,0 +1,103 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-vault page-vault-withdraw">
+    <app-spinner *ngIf="_spinner.inProgress"></app-spinner>
+    <div *ngIf="response && !response.isValid" class="card" role="alert">
+        <div class="alert-box alert-danger">
+            {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
+        </div>
+    </div>
+    <div *ngIf="response && response.isValid && cancelResponseData" class="card" role="alert">
+        <div class="alert-box alert-success">
+            {{'Status' | translate}}: {{'Your withdraw has been canceled' | translate}}
+        </div>
+    </div>
+    <div *ngIf="response && response.isValid && sendResponseData" class="card" role="alert">
+        <div class="alert-box alert-success">
+            {{'Status' | translate}}: {{'Your withdraw has been confirmed, await until we redirect you.' | translate}}
+        </div>
+    </div>
+    <div class="card" *ngIf="!cancelResponseData || !sendResponseData">
+        <span class="cardNumber">
+            <i class="icon-vault"></i>
+        </span>
+        <h2 class="cardTitle">{{'Withdraw' | translate}}</h2>
+        <div class="withdrawInfo" *ngIf="withdrawInfo">
+            <div>
+                <span>{{'From Address' | translate}}</span>
+                <span>{{withdrawInfo?.fromAddress}}</span>
+            </div>
+            <div>
+                <span>{{'To Address' | translate}}</span>
+                <span>{{withdrawInfo?.toAddress}}</span>
+            </div>
+            <div *ngIf="withdrawInfo?.currency == 'SMART'">
+                <span>{{'Amount' | translate}}</span>
+                <span>{{withdrawInfo?.amount | number:'1.2-4'}}</span>
+            </div>
+            <div>
+                <span>{{'Currency' | translate}}</span>
+                <span>{{withdrawInfo?.currency}}</span>
+            </div>
+            <div *ngIf="withdrawInfo?.currency !== 'SMART'">
+                <span>{{'Amount in' | translate}} {{withdrawInfo?.currency}}</span>
+                <span>{{withdrawInfo?.amount | number:'1.2-4'}}</span>
+            </div>
+            <div *ngIf="withdrawInfo?.amountSmart && withdrawInfo?.currency !== 'SMART'">
+                <span>{{'Amount in SMART' | translate}}</span>
+                <span>{{withdrawInfo?.amountSmart | number:'1.2-4'}}</span>
+            </div>
+
+            <div>
+                <span>{{'Status' | translate}}</span>
+                <span>{{withdrawInfo?.status}}</span>
+            </div>
+            <div>
+                <span>{{'Create Date' | translate}}</span>
+                <span>{{withdrawInfo?.createDate | date: 'short'}}</span>
+            </div>
+        </div>
+        <form #withdrawform="ngForm">
+            <div class="form-input" *ngIf="withdrawInfo?.status != 'Canceled' && withdrawInfo?.status != 'Sent'">
+                <label for="address">
+                    {{'Password' | translate}}
+                    <span class="required">*</span>
+                </label>
+                <input id="address" [type]="inputTypePassword" name="userKey" [(ngModel)]="userKeyPass" required #userKey="ngModel" />
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='password'" title="Show Password">
+                    <i class="icon-eye"></i>
+                </button>
+                <button type="button" (click)="showPassword()" *ngIf="inputTypePassword=='text'" title="Hide Password ">
+                    <i class="icon-eye"></i>
+                </button>
+            </div>
+            <div class="buttons" *ngIf="withdrawInfo?.status != 'Canceled' && withdrawInfo?.status != 'Sent'">
+                <button type="button" class="btn btn-secondary" [disabled]="!withdrawform.form.valid" (click)="toggleCancel()">
+                    <span>{{'Cancel' | translate}}</span>
+                </button>
+                <button type="button" class="btn btn-success" [disabled]="!withdrawform.form.valid" (click)="send()">
+                    <span>{{'Confirm' | translate}}</span>
+                </button>
+            </div>
+            <div class="alert-withdraw" *ngIf="withdrawInfo?.status == 'Canceled'">
+                {{'This withdraw was canceled.' | translate}}
+            </div>
+            <div class="alert-withdraw" *ngIf="withdrawInfo?.status == 'Sent'">
+                {{'This withdraw was confirmed.' | translate}}
+            </div>
+            <div class="card-delete" *ngIf="withdrawInfo?.status != 'Canceled' && withdrawInfo?.status != 'Sent'">
+                <span class="text">{{'Are you sure you want to cancel this withdraw?' | translate}}</span>
+                <div class="buttons">
+                    <button (click)="cancel()">
+                        <i class="icon-thumbs-up"></i>
+                        {{'Yes' | translate}}
+                    </button>
+                    <button (click)="toggleCancel()">
+                        <i class="icon-thumbs-down"></i> {{'No' | translate}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

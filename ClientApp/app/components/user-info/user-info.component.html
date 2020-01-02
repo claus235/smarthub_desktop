@@ -1,0 +1,14 @@
+<div class="avatar">
+    <a [routerLink]="['/profile']">
+        <img *ngIf="_shared.user && _shared.user.photo" src="{{_shared.user.photo}}" alt="..." class="img-fluid rounded-circle">
+        <img *ngIf="!_shared.user || !_shared.user.photo" src="{{baseUrl + 'img/avatar-1.png'}}" alt="..." class="img-fluid rounded-circle">
+    </a>
+</div>
+<div class="title">
+    <!--
+    <h1 class="h4" *ngIf="_shared.user && _shared.user.firstName !== ''"><a [routerLink]="['/profile']">{{ _shared.user.firstName }}</a></h1>
+    <h1 class="h4" *ngIf="_shared.user && _shared.user.firstName == '' && _shared.user.userId > 0"><a [routerLink]="['/profile']">#{{ _shared.user.userId }}</a></h1>
+    -->
+    <strong *ngIf="_shared.user && _shared.user.firstName !== ''">{{ _shared.user.firstName }}</strong>
+    <span>{{'Last Login' | translate}}: {{_shared.user.lastLoginDate| date:'medium'}}</span>
+</div>

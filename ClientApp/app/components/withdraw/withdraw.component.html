@@ -1,0 +1,171 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-withdraw page-changelly">
+    <div class="wallets currentWallet">
+        <button class="wallet" (click)="showWallets = !showWallets">
+            <div class="icon_address icon_address-{{currentWalletIndex}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{currentWallet?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{currentWallet?.displayName}}</span>
+            <span class="address">{{currentWallet?.address}}</span>
+        </button>
+    </div>
+    <div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}">
+        <button class="wallet" *ngFor="let w of getWallets(); let _index = index" (click)="currentWallet = w;currentWalletIndex = _index;showWallets = false" [ngClass]="{'actived': currentWallet?.address === w.address}">
+            <div class="icon_address icon_address-{{_index}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{w?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{w?.displayName}}</span>
+            <span class="address">{{w?.address}}</span>
+            <i class="icon-bullet-circle-stroke-unchecked ico_normal"></i>
+            <i class="icon-adjust ico_activated"></i>
+        </button>
+    </div>
+    <div class="page-wrapper">
+        <div class="smartshiftlogo">
+            <span>ATM Voucher - BETA</span>
+        </div>
+        <div class="betadisclaimer">
+            ATM Voucher Withdrawals are available on Bitugax (Portugal) and BitC (Switzerland) ATMs, BitC is the largest Crypto ATM network in Switzerland. Please check ATM locations for <a href="https://bitc.ch/#googlemapsFullWidth" target="_blank">Switzerland</a> and <a href="https://bitugax.com/#googlemapsFullWidth" target="_blank">Portugal</a>.
+        </div>
+        <div class="card card-1" *ngIf="!countrySelected && !currencie">
+            <span class="cardNumber"><i class="icon-withdraw"></i></span>
+            <span class="cardTitle">{{'Select a country' | translate}}</span>
+            <div class="countriesList">
+                <div class="countrie"
+                     *ngFor="let country of countries"
+                     (click)="getCurrencie(country);">
+                    <span class="flag flag-{{country.flag}}"></span>
+                    <span>{{country.name}}</span>
+                </div>
+            </div>
+        </div>
+        <app-spinner *ngIf="!inProgress"></app-spinner>
+        <div class="card card-1" *ngIf="!inProgress && currencie">
+            <span class="cardNumber"><i class="icon-withdraw"></i></span>
+            <span class="cardTitle">{{'Create ATM Voucher' | translate}}</span>
+            <div class="currencieInfo">
+                <span>
+                    <strong>{{'Minimum amount' | translate}}:</strong>
+                    {{currencie?.minAmount | number:'1.2-4'}}
+                </span>
+                <span>
+                    <strong>{{'Maximum amount' | translate}}:</strong>
+                    {{currencie?.maxAmount | number:'1.2-4'}}
+                </span>
+            </div>
+            <div class="valueRange">
+                <input #range
+                       type="range"
+                       [min]="currencie?.minAmount"
+                       [max]="currencie?.maxAmount"
+                       [value]="amountToWithdraw"
+                       (input)="amountToWithdraw = range.value;"
+                       step="10" />
+            </div>
+            <div class="youGet">
+                <span class="title">{{'Fiat Amount' | translate}}</span>
+                <span class="amount">
+                    <input id="amountToSend" (change)="changeAmountToWithdraw($event)" [value]="amountToWithdraw | number:'1.2-8'">
+                </span>
+                <span class="currency">{{currencie?.name}}</span>
+            </div>
+            <div class="youGet">
+                <span class="title">{{'SMART Amount' | translate}}</span>
+                <span class="amount">
+                    ≈ <input id="amountToReceive" [value]="cryptoAmount | number:'1.2-4'" disabled>
+                </span>
+                <span class="currency">SMART</span>
+            </div>
+            <div class="row">
+                <span class="label">{{'Country' | translate}}</span>
+                <span class="value">{{this.countrySelected.name}}</span>
+            </div>
+            <div class="row">
+                <span class="label">{{'Exchange rate' | translate}}</span>
+                <span class="value">1 {{this.currencie?.name}} = {{this.currencie?.smartAmount | number: '1.2-4'}} SMART</span>
+            </div>
+            <div class="row">
+                <span class="label">{{'Withdrawing from' | translate}} {{currentWallet?.displayName}}</span>
+                <span class="value">{{currentWallet?.address}}</span>
+            </div>
+            <form #sendForm="ngForm" (ngSubmit)="confirmWithdraw()" *ngIf="!inProgressConfirm">
+                <div class="form-input">
+                    <label for="userKey">{{'Password' | translate}} <span class="required">*</span></label>
+                    <input id="userKey" name="password" type="password" [(ngModel)]="userKey" required />
+                </div>
+                <div class="form-input" *ngIf="_shared.user.is2FAEnabled && _shared.user.require2faToSend">
+                    <label for="2fa">{{'Two FA Code' | translate}}:<span class="required">*</span> <span [hidden]="code.valid || code.pristine" class="alert alert-danger">{{'A valid code is required.' | translate}}</span></label>
+                    <input id="2fa" name="code" type="text" [(ngModel)]="code2fa" #code="ngModel" autocomplete="off" required />
+                </div>
+                <div *ngIf="false" class="form-input form-terms">
+                    <div>
+                        <input id="inputTerms" type="checkbox" [(ngModel)]="termsAcepted" name="termsAcepted" required>
+                        <label for="inputTerms">Accept Terms of Service</label>
+                    </div>
+                    <span (click)="showTerms = true">Read the terms of service</span>
+                </div>
+                <div class="betadisclaimer">
+                    Note that the process is irreversible. Once a voucher is created it is only redeemable at a supporting ATMs.
+                </div>
+                <button class="btn-exchange" type="submit" [disabled]="!sendForm.form.valid">
+                    {{'Confirm' | translate}}
+                </button>
+            </form>
+        </div>
+        <div class="card card-2" *ngIf="myWithdrawls?.length">
+            <span class="cardTitle">
+                {{'My ATM Vouchers' | translate}}
+                <svg *ngIf="transactionProgress" class="transactionProgress" version="1.1" id="L9"
+                     xmlns="http://www.w3.org/2000/svg"
+                     x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0"
+                     xml:space="preserve">
+                <path fill="#F4B517"
+                      d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                      transform="rotate(300 50 50)">
+                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50"
+                                  to="360 50 50" repeatCount="indefinite"></animateTransform>
+            </path>
+        </svg>
+            </span>
+            <div *ngFor="let transaction of myWithdrawls;let i = index;trackBy: trackByFn"
+                 class="transaction-item">
+                <div class="transaction-info-head">
+                    <div class="col1">
+                        <span class="status {{transaction?.paymentStatus}}">
+                            <svg *ngIf="showStatusProgress(transaction?.paymentStatus)" class="statusProgress" version="1.1" id="L9"
+                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                 viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                            <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                                  transform="rotate(300 50 50)">
+                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50"
+                                              to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                </path>
+                            </svg>
+                            {{transaction?.paymentStatus}}
+                        </span>
+                    </div>
+                    <div class="col2">
+                        <span class="currencie">{{transaction?.cashAmount}} {{transaction?.cashCurrency}} / {{transaction?.cryptoAmount}} {{transaction?.cryptoCurrency}}</span>
+                    </div>
+                    <span class="arrow"
+                          (click)="toggleViewer($event)"
+                          [ngClass]="{'active': withdrawCreated && i == 0}">&nbsp;</span>
+                </div>
+                <div class="transaction-info-content"
+                     [ngClass]="{'active': withdrawCreated && i == 0}">
+                    <withdraw-transaction-description [transaction]="transaction"></withdraw-transaction-description>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-terms animation fadeIn" *ngIf="showTerms">
+    <button class="close" (click)="showTerms = false;">x</button>
+    <div class="content">
+        <div [innerHTML]="currencie?.terms?.termText"></div>
+    </div>
+</div>

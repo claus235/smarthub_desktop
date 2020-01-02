@@ -1,0 +1,47 @@
+import { BaseLocalStorageService } from './base-localstore.service';
+import { SharedService } from './shared-service.service';
+import { Injectable, Inject } from '@angular/core';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import { Util } from "../models/util";
+
+@Injectable()
+export class CurrentPriceService {
+    constructor(protected baseStorage: BaseLocalStorageService, private _shared: SharedService, @Inject('BASE_URL') public baseUrl: string) {
+    }
+
+    async getObservableServerCurrentPrice() {
+        if (!Util.isValidObject(this._shared.dataStore.currentPrice)) {
+            let url = `${this.baseUrl}api/wallet/getcurrentprice`;
+            this._shared.dataStore.currentPrice = await
+                this._shared.http
+                    .get(url)
+                    .map((res) => {
+                        var json = res.json();
+
+                        var model = [{
+                            price_usd: json.items[0].currencies.USD.toString(),
+                            price_btc: json.items[0].currencies.BTC.toString(),
+                        }];
+
+                        this._shared.dataStore.currentPrice = model;
+                        return model;
+                    }).toPromise();
+
+            return await this._shared.dataStore.currentPrice;
+        }
+        return await this._shared.dataStore.currentPrice;
+    }
+
+    async getCurrentPriceInExchange() {
+        let url = `${this.baseUrl}api/wallet/getcurrentpricewithcoin`;
+
+        return await new Promise<number>((resolve, reject) => {
+            $.get(url).done((data) => {
+                resolve(data);
+            }).fail((err) => {
+                reject(err);
+            });
+        });
+    }
+}

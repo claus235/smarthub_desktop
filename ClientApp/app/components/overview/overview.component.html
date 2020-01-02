@@ -1,0 +1,92 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-overview">
+    <div class="alert-box alert-warning text-center"
+         *ngIf="!_shared?.user?.is2FAEnabled">
+        <p>
+            {{'Your account security is our top priority! Protect your account by enabling 2FA' | translate}}
+            <a routerLink="/settings">{{'here' | translate}}</a>
+        </p>
+    </div>
+    <div class="alert-box alert-warning text-center"
+         *ngIf='notifications?.length'>
+        <p *ngFor="let notification of notifications">{{notification}}</p>
+    </div>
+    <div class="page-legend">
+        <span>{{'Here are your' | translate}} {{_shared.wallet.length}} {{'smartcash addresses. You can use them to receive and send smartcash' | translate}}</span>
+        <div class="buttons">
+            <a class="changelly" [routerLink]="['/changelly']">
+                <i class="icon-changelly"></i>
+                <span>{{'Changelly' | translate}}</span>
+            </a>
+            <!-- <a class="smartshift" [routerLink]="['/smartshift']">
+              <i class="icon-smartshift"></i>
+              <span>{{'SmartShift' | translate}}</span>
+            </a> -->
+        </div>
+    </div>
+    <div class="card-address-wrap">
+        <div class="card-address" *ngFor="let w of getWallets(); let _index = index">
+            <div class="card-body">
+                <div class="icon_address icon_address-{{_index}}" [ngClass]="{'icon_addres--vault': w.isVault}">
+                    <i [ngClass]="{
+              'icon-account-balance-wallet': !w.isVault && !w.isScheduled,
+              'icon-vault': w.isVault,
+              'icon-calendar': w.isScheduled
+            }"></i>
+                </div>
+                <div class="balanceInfo">
+                    <span class="balance">Σ {{w.balance | number:'1.2-4'}}</span>
+                    <span class="displayName">{{w.displayName}}</span>
+                </div>
+                <div class='btn'>
+                    <button class="icon-edit" (click)='editLabel(w, _index)'></button>
+                    <button *ngIf="!w.isVault && !w.isScheduled" class="icon-card" (click)='goToCards(w)'></button>
+                </div>
+            </div>
+            <div class="card-bottom">
+                <div>
+                    <span class="address-title">{{'Address' | translate}}</span>
+                    <span class="address-code">{{w.address}}</span>
+                </div>
+                <button class="btn btn-copy" type="button" [attr.data-clipboard-text]="w.address">
+                    <i class="icon-content-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-form" *ngIf="!inProgress && openForm && (!response || response.status !== 'OK')">
+        <form class="animated fadeIn" (ngSubmit)="onSubmit()" #sendForm="ngForm">
+            <div class="modal-header">
+                <button (click)="openForm = false">x</button>
+                <p>Σ {{walletRequest.balance | number:'1.2-4'}}</p>
+                <div class="icon_address icon_address-{{address_index}}">
+                    <i class="icon-account-balance-wallet"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-input">
+                    <label for="name">{{'Address Name' | translate}}:</label>
+                    <input id="name" name="name" type="text" [(ngModel)]="walletRequest.displayName" placeholder="Name" required #name="ngModel" />
+                </div>
+                <div class="rewards" *ngIf="!walletRequest.isVault && !walletRequest.isScheduled">
+                    <input id="isRewards" name="isRewards" type="checkbox" [(ngModel)]="walletRequest.isRewards" #isRewards="ngModel" />
+                    <svg width="20" height="19" viewBox="0 0 20 19" *ngIf="walletRequest.isRewards">
+                        <defs>
+                            <path id="eligible" d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z" />
+                        </defs>
+                        <use fill="#000" fill-rule="evenodd" transform="translate(-2 -2)" xlink:href="#eligible" />
+                    </svg>
+                    <img *ngIf="!walletRequest.isRewards" src="/images/icons/not_eligible.png" alt="">
+                    <label for="isRewards" *ngIf="walletRequest.isRewards">{{'Smart Rewards Address' | translate}}</label>
+                    <label for="isRewards" *ngIf="!walletRequest.isRewards">{{'Not Smart Rewards Address' | translate}}</label>
+                </div>
+            </div>
+            <div class="modal-bottom">
+                <button type="submit" class="btn btn-secondary" (click)="cancelEdit()">{{'Cancel' | translate}}</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!sendForm.form.valid || inProgress">{{'Save' | translate}}</button>
+            </div>
+        </form>
+    </div>
+</div>

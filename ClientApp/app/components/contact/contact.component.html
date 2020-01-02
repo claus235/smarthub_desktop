@@ -1,0 +1,90 @@
+<div class="topWrapper">
+    <span class="count-contacts">{{contacts?.length}} {{'contacts' | translate}}</span>
+    <button class='btn btn-green btn-newContact' (click)='setAdd()'>
+        <span>{{'New Contact' | translate}}</span>
+        <i class="icon-person-add"></i>
+    </button>
+</div>
+
+<div class="contact-label">
+    <div class="name">{{'Name' | translate}}</div>
+    <div class="address hide_mobile">{{'Address' | translate}}</div>
+    <div class="delete">{{'Delete' | translate}}</div>
+</div>
+
+<div class="contacts" *ngIf="contacts && _.size(contacts) > 0">
+    <div class="contact" *ngFor="let contact of contacts; let i = index" [ngClass]="{'active': _toggleContact === i}" (click)="toggleContact(i)">
+        <div class="name">
+            <i class="icon-person"></i>
+            <span>{{contact.name}}</span>
+        </div>
+        <div class="address">
+            <strong>{{'Address' | translate}}</strong>
+            <span class="break-word">{{contact.address}}</span>
+        </div>
+        <div class="delete">
+            <button class='btn' (click)='setDelete(contact)'>
+                <i class="icon-delete"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!contacts || _.size(contacts) == 0">
+    <div class="alert-box alert-warning">{{'No contacts found.' | translate}}</div>
+</div>
+
+<!-- Modal New Contact -->
+<div class="modal" *ngIf="!inProgress && openForm && (!response || response.status !== 'OK')">
+    <div class="modal-dialog animate fadeIn">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{'Add new contact' | translate}}</h4>
+            </div>
+            <form (ngSubmit)="onSubmit()" #sendForm="ngForm">
+                <div class="modal-body">
+                    <div class="form-input">
+                        <label for="name">{{'Contact Name' | translate}}: *</label>
+                        <input id="name" name="name" type="text" [(ngModel)]="contactRequest.name" required #name="ngModel" />
+                    </div>
+                    <div class="form-input">
+                        <label for="address">{{'Address' | translate}}: *</label>
+                        <input id="address" name="address" type="text" [(ngModel)]="contactRequest.address" required #address="ngModel" />
+                        <button type="button" data-toggle="modal" data-target="#modalQrCode" id="btnQrCode" (click)="startQR()" *ngIf="hasQrCode">
+                            <i class="icon-select-all"></i>
+                        </button>
+                    </div>
+                    <div class="form-input">
+                        <label for="email">{{'Email' | translate}}:</label>
+                        <input id="email" [(ngModel)]="contactRequest.email" name="email" #email="ngModel" type="text" />
+                    </div>
+                    <div class="form-input">
+                        <label for="">{{'Phone number' | translate}}:</label>
+                        <phone-number [(ngModel)]="contactRequest.phone" [defaultCountry]="defaultCountry" name="phoneNumber" #phoneNumber="ngModel"></phone-number>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class='btn btn-secondary' (click)='cancelAdd()' *ngIf='openForm'>{{'Cancel' | translate}}</button>
+                    <button type="submit" class="btn btn-green" [disabled]="!sendForm.form.valid || inProgress">{{'Save' | translate}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal QrCode -->
+<div class="modal" id="modalQrCode" role="dialog" style="display:none">
+    <div class="modal-dialog animate fadeIn">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="stopQR()">&times;</button>
+                <h4 class="modal-title">{{'Scan your QR CODE' | translate}}</h4>
+            </div>
+            <div class="modal-body">
+                <iframe scrolling="no" id="iQR" src="" class="iframeQR"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="stopQR()">{{'Cancel' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

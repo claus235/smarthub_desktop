@@ -1,0 +1,77 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-proposal">
+    <div class="filter">
+        <button *ngFor="let filter of filters" [ngClass]="{'active': filterType === filter}" (click)="filterType = filter">{{filter | translate}}</button>
+    </div>
+    <div class="proposals">
+        <div class="proposal" *ngFor="let proposal of getProposals()">
+            <div class="detail">
+                <p class="status" [ngClass]="{'notFunded': proposal.status === 'Not Funded'}">{{proposal.status | translate}}</p>
+                <h3 class="title" *ngIf="proposal.title.length <= 45">{{proposal.title}}</h3>
+                <h3 class="title" *ngIf="proposal.title.length > 45">{{proposal.title | slice:0:45}} ...</h3>
+                <p class="owner">
+                    {{'by' | translate}}
+                    <strong>{{proposal.owner}}</strong> {{'on' | translate}} {{proposal.createdDate | date:'medium'}}
+                </p>
+                <p class="summary" *ngIf="proposal.summary.length <= 196">{{proposal.summary}}</p>
+                <p class="summary" *ngIf="proposal.summary.length > 196">{{proposal.summary | slice:0:196}} ...</p>
+            </div>
+            <div class="requested">
+                <p class="requestedFounds">Requested Funds</p>
+                <p class="amountSmart">
+                    <span>Σ</span> {{proposal?.amountSmart | number:'1.2-4'}}
+                </p>
+                <p class="amountUSD">$ {{proposal?.amountUSD | number:'1.2-4'}}</p>
+            </div>
+            <div class="voteCount">
+                <div class="votes">
+                    <div class="yes">
+                        <span class="percent">
+                            <i class="icon-thumbs-up"></i>
+                            <span>{{getNumber(proposal?.percentYes) | number:'2.1-2'}}%</span>
+                        </span>
+                        <span class="vote">
+                            <strong>{{'Yes' | translate}}</strong>
+                            <span>({{getNumber(proposal?.voteYes)}})</span>
+                        </span>
+                        <div class="progressBar">
+                            <span [style.width.%]="proposal.percentYes"></span>
+                        </div>
+                    </div>
+                    <div class="no">
+                        <span class="percent">
+                            <i class="icon-thumbs-down"></i>
+                            <span>{{getNumber(proposal?.percentNo) | number:'2.1-2'}}%</span>
+                        </span>
+                        <span class="vote">
+                            <strong>{{'No' | translate}}</strong>
+                            <span>({{getNumber(proposal?.voteNo)}})</span>
+                        </span>
+                        <div class="progressBar">
+                            <span [style.width.%]="proposal.percentNo"></span>
+                        </div>
+                    </div>
+                    <div class="abstain">
+                        <span class="percent">
+                            <i class="icon-interrogation"></i>
+                            {{getNumber(proposal?.percentAbstain) | number:'2.1-2'}}%
+                        </span>
+                        <span class="vote">
+                            <strong>{{'Abstain' | translate}}</strong>
+                            <span>({{getNumber(proposal?.voteAbstain)}})</span>
+                        </span>
+                        <div class="progressBar">
+                            <span [style.width.%]="proposal.percentAbstain"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons text-right">
+                    <a class="btn btn-proposal" [routerLink]="['/proposal/detail/' + proposal.url]">{{'View' | translate}}</a>
+                    <a class="btn btn-vote" [routerLink]="['/proposal/vote/' + proposal.url]" *ngIf="filterType === 'Open'">{{'Vote' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

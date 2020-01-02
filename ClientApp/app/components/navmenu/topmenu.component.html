@@ -1,0 +1,121 @@
+<nav class="navbar">
+    <button class="logo" (click)="_topmenu.toggleNavbar()">
+        <i class="icon icon-menu"></i>
+        <img src="/img/weblogo.png" alt="">
+    </button>
+    <div class="wrapper" [ngClass]="{'notAuthenticated': _shared.isAuthenticated === false}">
+        <div class="title">
+            <i></i> {{_topmenu.titlePage}}
+        </div>
+        <balance *ngIf="_shared.isAuthenticated"></balance>
+        <user-info *ngIf="_shared.isAuthenticated"></user-info>
+        <a class="logout" [routerLink]="['/logout']" *ngIf="_shared.isAuthenticated">
+            <i class="icon-logout"></i>
+        </a>
+        <div class="language">
+            <span>{{'Language' | translate}}</span>
+            <select #langSelect (change)="changeLanguage(langSelect.value)">
+                <option *ngFor="let lang of _translate.getLangs()" [value]="lang" [selected]="lang === _translate.currentLang">{{ lang }}</option>
+            </select>
+        </div>
+    </div>
+</nav>
+<!--
+<nav class="navbar" [ngClass]="(_shared.isProductionEnvironment)?'':'nav-grey'">
+    <div class="search-box">
+        <button class="dismiss">
+            <i class="icon-close"></i>
+        </button>
+        <form id="searchForm" action="#" role="search" #searchForm="ngForm">
+            <input type="search" placeholder="Enter a Transaction ID" [(ngModel)]="tx.id" #id="ngModel" name="transactionId" class="form-control" (focusout)="searchTransaction()">
+        </form>
+    </div>
+    <div class="container-fluid">
+        <div class="navbar-holder d-flex align-items-center justify-content-between">
+            <div class="navbar-header" *ngIf="_shared.isProductionEnvironment">
+                <a [routerLink]="['/home']" class="navbar-brand">
+                    <div class="brand-text brand-big hidden-lg-down">
+                        <img src="/img/logo.png" width="30px" height="30px" />
+                        <span>{{'Web' | translate}}</span>
+                        <strong>{{'Wallet' | translate}}</strong>
+                        <small>{{'beta' | translate}}</small>
+                    </div>
+                </a>
+            </div>
+            <div class="navbar-header" *ngIf="!_shared.isProductionEnvironment">
+                <a [routerLink]="['/home']" class="navbar-brand">
+                    <div class="brand-text brand-big hidden-lg-down">
+                        <img src="/img/logo.png" width="30px" height="30px" />
+                        <span>{{'Web' | translate}}</span>
+                        <strong>{{'Wallet' | translate}}</strong>
+                        <small>{{'test' | translate}}</small>
+                    </div>
+                    <div class="brand-text brand-small">
+                        <img src="/img/logo.png" width="30px" height="30px" />
+                        <small>{{'test' | translate}}</small>
+                    </div>
+                </a>
+                <a id="toggle-btn" href="#" class="menu-btn active hidden-sm-down">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div>
+        </div>
+        <ul *ngIf="!_shared.isAuthenticated" class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center pull-right">
+            <li class="nav-item d-flex align-items-center nav-language">
+                <select #langSelect (change)="changeLanguage(langSelect.value)">
+                    <option *ngFor="let lang of _translate.getLangs()" [value]="lang" [selected]="lang === _translate.currentLang">{{ lang }}</option>
+                </select>
+            </li>
+        </ul>
+        <ul *ngIf="_shared.isAuthenticated" class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center pull-right">
+
+            <li class="nav-item d-flex align-items-center nav-language hidden-sm-down">Language:</li>
+            <li class="nav-item d-flex align-items-center nav-language">
+                <select #langSelect (change)="changeLanguage(langSelect.value)">
+                    <option *ngFor="let lang of _translate.getLangs()" [value]="lang" [selected]="lang === _translate.currentLang">{{ lang }}</option>
+                </select>
+            </li>
+
+            <li class="nav-item d-flex align-items-center">
+                <a href="https://smartcash.freshdesk.com/support/solutions" target="_blank">
+                    <i class="fa fa-life-ring"></i>
+                </a>
+            </li>
+
+            <li *ngIf="_shared.isAuthenticated" class="nav-item d-flex align-items-center">
+                <a [routerLink]="['/settings']">
+                    <i class="fa fa-cog"></i>
+                </a>
+            </li>
+
+            <li class="nav-item d-flex align-items-center" *ngIf="_shared.isAuthenticated">
+                <a [routerLink]="['/logout']" class="nav-link logout"> {{'Logout' | translate}}
+                    <i class="fa fa-sign-out"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav> -->
+<!--
+<div class="alert alert-danger alert-dismissible fade show  hidden-sm-down" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Alert!</strong> Did you print
+    <i class="fa fa-print"></i> or save
+    <i class="fa fa-floppy-o"></i> your Master Security Code (Old Security ID) and your PRIVATE KEYS? If not, we strongly recommend you create another
+    wallet, print or save it in a secure place (without internet), then transfer your funds to this new account.
+</div>
+
+<div class="alert alert-info alert-dismissible fade show" role="alert" *ngIf="!isNative && !isMobile">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Do you know how to install it on Android <i class="fa fa-android"></i>?</strong>
+    <a target="_blank" href="https://smartcash.freshdesk.com/support/solutions/articles/35000020914-how-to-install-android-wallet">
+        Click here
+    </a>
+</div>
+-->

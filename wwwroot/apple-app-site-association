@@ -1,0 +1,11 @@
+{
+  "webcredentials": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "WTK3694554.cc.smartcash.wallet",
+        "paths": [ "*" ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+<div class="page page-donate">
+    <div class="logo">
+        <img src="/img/weblogo.png" alt="SmartCash">
+    </div>
+    <div class="card card-1">
+        <h3>{{'Donate to' | translate}} {{route.snapshot.params.userName}}</h3>
+        <img *ngIf="user?.data?.qrCodeUrl" src="{{user?.data?.qrCodeUrl}}">
+        <div class="walletInfoWrapper">
+            <span class="address">{{user?.data?.address}}</span>
+            <button class="btn" type="button" [attr.data-clipboard-text]="user?.data?.address">
+                <i class="icon-content-copy"></i>
+            </button>
+        </div>
+    </div>
+    <smartshift-cards *ngIf="route.snapshot.params.userName && user?.data?.address"
+                      class="page-changelly"
+                      [isDonation]="true"
+                      [donationUserName]="route.snapshot.params.userName"
+                      [donationAddress]="user?.data?.address"></smartshift-cards>
+</div>

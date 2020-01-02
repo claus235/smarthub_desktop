@@ -1,0 +1,32 @@
+<div class="animated fadeIn">
+    <div class="card" *ngIf="_card.cardAppType === 'android'">
+        <button class="icon-close" (click)="_card.disableCards()"></button>
+        <span class="cardNumber"><i class="icon-android-card"></i></span>
+        <span class="cardTitle">{{'Enter your password to access Android Card'}}</span>
+        <div class="form-input input-password">
+            <label for="password">
+                {{'Password' | translate}}:
+                <span class="required">*</span>
+            </label>
+            <input id="password" type="password" [(ngModel)]="userKey">
+        </div>
+        <button type="submit" class="btn btn-success" (click)="getAndroidCard()">
+            <span>{{'Get Android Card' | translate}}</span>
+        </button>
+    </div>
+    <div class="card" *ngIf="_card.cardAppType === 'apple'">
+        <button class="icon-close" (click)="_card.disableCards()"></button>
+        <span class="cardNumber"><i class="icon-apple-card"></i></span>
+        <span class="cardTitle">{{'Enter your password to access Apple Card'}}</span>
+        <div class="form-input input-password">
+            <label for="password">
+                {{'Password' | translate}}:
+                <span class="required">*</span>
+            </label>
+            <input id="password" type="password" [(ngModel)]="userKey">
+        </div>
+        <button type="submit" class="btn btn-success" (click)="getAppleCard()">
+            <span>{{'Get Apple Card' | translate}}</span>
+        </button>
+    </div>
+</div>

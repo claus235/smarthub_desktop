@@ -1,0 +1,112 @@
+<div class="card">
+    <h2 class="cardTitle">{{'Creating Recurring Payment' | translate}}</h2>
+    <form class="form" #sendForm="ngForm">
+        <div class="form-input">
+            <label for="description">{{'Description' | translate}}<span class="required">*</span></label>
+            <input id="description"
+                   name="description"
+                   type="text"
+                   required
+                   [(ngModel)]="recurringRequest.label" />
+        </div>
+        <div class="form-input">
+            <label for="toAddress">{{'Destination address' | translate}}<span class="required">*</span></label>
+            <input id="toAddress"
+                   name="toAddress"
+                   type="text"
+                   required
+                   [(ngModel)]="recurringRequest.toAddress" />
+            <div class="button-group">
+                <scanbar-button field="toAddress" (onSelected)="recurringRequest.toAddress = $event"></scanbar-button>
+                <wallets-button (onSelected)="recurringRequest.toAddress = $event"></wallets-button>
+                <contacts-button (onSelected)="recurringRequest.toAddress = $event"></contacts-button>
+                <smartvault-button (onSelected)="recurringRequest.toAddress = $event"></smartvault-button>
+            </div>
+        </div>
+        <div class="form-input form-input-50">
+            <label for="recurrenceType">{{'Pay every' | translate}} <span class="required">*</span></label>
+            <select name="recurrenceType" id="recurrenceType" [(ngModel)]="recurringRequest.IdRecurrenceType">
+                <option [value]="recurrenceType?.id" *ngFor="let recurrenceType of recurrencetypes;let i = index" [selected]="recurringRequest.IdRecurrenceType === recurrenceType?.id">{{recurrenceType.description}}</option>
+            </select>
+        </div>
+        <div class="form-input form-input-50">
+            <label for="currency">{{'Currency' | translate}}<span class="required">*</span></label>
+            <select id="currency" name="currency" [(ngModel)]="recurringRequest.currency" (change)="returnConversionRate($event.target.value)">
+                <option *ngFor="let fiat of getFiatList();let i = index; trackBy: trackByFn" [value]="fiat?.name" [selected]="recurringRequest.currency == fiat?.name">{{fiat?.name}}</option>
+            </select>
+        </div>
+        <div class="form-input form-input-50">
+            <label for="amount">{{'Amount' | translate}}<span class="required">*</span></label>
+            <input id="amount"
+                   name="amount"
+                   type="text"
+                   required
+                   [(ngModel)]="recurringRequest.amount"
+                   (ngModelChange)="calculateAmountWithFee($event)"
+                   (input)="onAmountChange($event)"
+                   (keypress)="onAmountChange($event)"
+                   mask='0*.00000000'
+                   [dropSpecialCharacters]="false" />
+        </div>
+        <div class="form-input form-input-50">
+            <label for="amount">{{'SMART amount with fee' | translate}}</label>
+            <input id="amountWithFee"
+                   name="amountWithFee"
+                   type="text"
+                   [(ngModel)]="transactionExtended.amountWithFee"
+                   disabled />
+        </div>
+        <div class="form-input form-input-50 transaction-date">
+            <label for="startDate">{{'Starting' | translate}}<span class="required">*</span></label>
+            <input id="startDate"
+                   name="startDate"
+                   type="text"
+                   required
+                   [(ngModel)]="recurringRequest.startDate"
+                   bsDatepicker
+                   [minDate]="minDateToSend"
+                   [bsConfig]="dateRangePickerConfig"
+                   placement="top" />
+            <i class="icon-calendar"></i>
+        </div>
+        <div class="form-input form-input-50 transaction-date">
+            <label for="endDate">{{'Ending' | translate}}</label>
+            <input id="endDate"
+                   name="endDate"
+                   type="text"
+                   [(ngModel)]="recurringRequest.endDate"
+                   bsDatepicker
+                   [minDate]="minDateToSend"
+                   [bsConfig]="dateRangePickerConfig"
+                   placeholder="Never"
+                   placement="top" />
+            <i class="icon-calendar"></i>
+        </div>
+        <div class="form-input">
+            <label for="password">{{'Password' | translate}}<span class="required">*</span></label>
+            <input id="password"
+                   name="password"
+                   [type]="inputTypePassword"
+                   required
+                   [(ngModel)]="recurringRequest.userKey" />
+            <div class="button-group">
+                <scanbar-button class="btn" field="password"></scanbar-button>
+                <button type="button" (click)="toggleInputType()" style="bottom:7px;position:relative;">
+                    <i class="icon-eye"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-input" *ngIf="_shared.user.is2FAEnabled && _shared.user.require2faToSend">
+            <label for="2fa">{{'Two FA Code' | translate}}<span class="required">*</span> <span [hidden]="code.valid || code.pristine" class="alert alert-danger">{{'A valid code is required.' | translate}}</span></label>
+            <input id="2fa" name="code" type="password" value="" [(ngModel)]="recurringRequest.code" #code="ngModel" autocomplete="off" />
+        </div>
+        <button *ngIf="!spinner.inProgress"
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!sendForm.form.valid"
+                (click)="spinner.showSpinner();createRecurringPayment()">
+            Create
+        </button>
+        <app-spinner></app-spinner>
+    </form>
+</div>

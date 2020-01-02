@@ -1,0 +1,30 @@
+.label {
+    font-weight: 700;
+    display: block;
+    font-size: 14px;
+}
+
+.value {
+    margin-bottom: 10px;
+    word-break: break-word;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+    .buttons button {
+        color: #333;
+    }
+
+@media screen and (max-width: 425px) {
+    .buttons {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,82 @@
+<div class="box-card" *ngIf="transaction?.qrCode" (click)="showModalQRCode = true">
+    <div class="background">
+        <img *ngIf="transaction?.countryCode !== 'PRT'" src="/images/card_bitc.png" alt="Card" />
+        <img *ngIf="transaction?.countryCode == 'PRT'" src="/images/card_bitugax.png" alt="Card" />
+    </div>
+    <qrcode class="qrcode" [data]="transaction?.qrCode"></qrcode>
+    <div class="fiatAmount">
+        ${{transaction?.cashAmount | number: '1.2'}} {{transaction?.cashCurrency}}
+    </div>
+</div>
+<div class="buttons">
+    <button *ngIf="transaction?.qrCode" (click)="print()" class="btn">{{'Print Card' | translate}}</button>
+    <button *ngIf="transaction?.qrCode" (click)="showModalQRCode = true" class="btn">{{'Open QR Code in modal' | translate}}</button>
+</div>
+<div class="modal fade" id="modalQrCode" role="dialog" *ngIf="showModalQRCode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="showModalQRCode = false">&times;</button>
+                <h4 class="modal-title">Transaction QR Code</h4>
+            </div>
+            <div class="modal-body">
+                <qrcode class="qrcode" [data]="transaction?.qrCode"></qrcode>
+            </div>
+            <div class="modal-footer text-right">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="showModalQRCode = false">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="transaction?.cashAmount">
+    <span class="label">{{'Cash Amount' | translate}}</span>
+    <span class="value">{{transaction?.cashAmount | number: '1.2'}}</span>
+</div>
+<div *ngIf="transaction?.cashCurrency">
+    <span class="label">{{'Cash Currency' | translate}}</span>
+    <span class="value">{{transaction?.cashCurrency}}</span>
+</div>
+<div *ngIf="transaction?.cryptoAddress">
+    <span class="label">{{'Crypto Address' | translate}}</span>
+    <span class="value">{{transaction?.cryptoAddress}}</span>
+</div>
+<div *ngIf="transaction?.cryptoAmount">
+    <span class="label">{{'CryptoAmount' | translate}}</span>
+    <span class="value">{{transaction?.cryptoAmount}}</span>
+</div>
+<div *ngIf="transaction?.cryptoCurrency">
+    <span class="label">{{'Crypto Currency' | translate}}</span>
+    <span class="value">{{transaction?.cryptoCurrency}}</span>
+</div>
+<div *ngIf="transaction?.fixedTransactionFee">
+    <span class="label">{{'Transaction Fee' | translate}}</span>
+    <span class="value">{{transaction?.fixedTransactionFee}}</span>
+</div>
+<div *ngIf="transaction?.localTransactionId">
+    <span class="label">{{'Local Transaction Id' | translate}}</span>
+    <span class="value">{{transaction?.localTransactionId}}</span>
+</div>
+<div *ngIf="transaction?.remoteTransactionId">
+    <span class="label">{{'Remote Transaction Id' | translate}}</span>
+    <span class="value">{{transaction?.remoteTransactionId}}</span>
+</div>
+<div *ngIf="transaction?.status">
+    <span class="label">{{'Status' | translate}}</span>
+    <span class="value">{{transaction?.status}}</span>
+</div>
+<div *ngIf="transaction?.paymentStatus">
+    <span class="label">{{'Payment Status' | translate}}</span>
+    <span class="value">{{transaction?.paymentStatus}}</span>
+</div>
+<div *ngIf="transaction?.paymentTxId">
+    <span class="label">{{'Payment Tx Id' | translate}}</span>
+    <span class="value">{{transaction?.paymentTxId}}</span>
+</div>
+<div *ngIf="transaction?.transactionUUID">
+    <span class="label">{{'Transaction UUID' | translate}}</span>
+    <span class="value">{{transaction?.transactionUUID}}</span>
+</div>
+<div *ngIf="transaction?.validityInMinutes">
+    <span class="label">{{'Validity in minutes' | translate}}</span>
+    <span class="value">{{transaction?.validityInMinutes}}</span>
+</div>

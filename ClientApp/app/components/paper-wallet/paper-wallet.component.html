@@ -1,0 +1,27 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-wallet">
+    <span class="print" style="margin-left: 30px;">
+        <button class="btn btn-primary" id="singleprint" onclick="window.print();">Print</button>
+    </span>
+    <div class="list" *ngFor="let item of listAddress;let i = index">
+        <div class="card">
+            <img class="card-bg" src="/images/card.png" alt="">
+            <img class="smartcash" src="/images/icons/apple-icon-57x57.png" alt="">
+            <span class="label" id="singlelabelbitcoinaddress">SmartCash Address</span>
+            <div class="type">SHARE</div>
+            <qrcode class="qrCode" [data]="item.address"></qrcode>
+            <span class="output" id="btcaddress">{{item.address}}</span>
+        </div>
+        <div class="card">
+            <img class="card-bg" src="/images/card.png" alt="">
+            <img class="smartcash" src="/images/icons/apple-icon-57x57.png" alt="">
+            <span class="label" id="singlelabelprivatekey">Private Key</span>
+            <div class="type">SECRET</div>
+            <qrcode class="qrCode" [data]="item.privateKey"></qrcode>
+            <span class="output" id="btcprivwif">{{item.privateKey}}</span>
+        </div>
+        <div *ngIf="i !== 0 && i % 3 === 0" class="page-break"></div>
+    </div>
+</div>

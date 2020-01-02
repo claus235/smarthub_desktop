@@ -1,0 +1,306 @@
+<top-menu></top-menu>
+<nav-menu></nav-menu>
+<nav-bottom></nav-bottom>
+<div class="page page-changelly">
+    <div class="wallets currentWallet">
+        <button class="wallet" (click)="showWallets = !showWallets">
+            <div class="icon_address icon_address-{{currentWalletIndex}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{currentWallet?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{currentWallet?.displayName}}</span>
+            <span class="address">{{currentWallet?.address}}</span>
+        </button>
+    </div>
+    <div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}">
+        <button class="wallet" *ngFor="let w of getWallets(); let _index = index" (click)="setWallet(w, _index)" [ngClass]="{'actived': smartAddress === w.address}">
+            <div class="icon_address icon_address-{{_index}}">
+                <i class="icon-account-balance-wallet"></i>
+            </div>
+            <span class="balance">Σ {{w.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{w.displayName}}</span>
+            <span class="address">{{w.address}}</span>
+            <i class="icon-bullet-circle-stroke-unchecked ico_normal"></i>
+            <i class="icon-adjust ico_activated"></i>
+        </button>
+    </div>
+    <div class="page-wrapper">
+        <img class="logo" src="/img/changelly-logo.png" alt="Changelly">
+        <div class="card" *ngIf="!createdTransaction">
+            <form (ngSubmit)="createTransaction()" #sendForm="ngForm" autocomplete="off">
+                <span class="cardNumber">1</span>
+                <span class="cardTitle">{{'Convert' | translate}} {{fromCurrency?.fullName}} to SmartCash</span>
+                <div *ngIf="this.minAmount > this.amountToSend && this.amountToSend != 0" class="alert-box alert-warning" role="alert">
+                    {{'Minimal amount is ' | translate}} {{minAmount | number:'1.2-8'}}
+                </div>
+                <div *ngIf="errorMessage" class="alert-box alert-danger" role="alert">
+                    {{'Error' | translate}}:
+                    <span [innerHtml]="errorMessage"></span>
+                </div>
+                <div class="payWith">
+                    <span class="title">{{'Pay With' | translate}}</span>
+                    <input class="input" type="text" [(ngModel)]="amountToSend" name="sendAmount" #sendAmount="ngModel" (change)="getAmountToReceive()" (focus)="amountToSend = amountToSend" mask='0*.00000000' [dropSpecialCharacters]="false" />
+                    <span class="currency" (click)="activeDropbox = true">
+                        {{fromCurrency?.name}}
+                        <i class="icon-down-arrow"></i>
+                    </span>
+                    <div class="dropbox" *ngIf="activeDropbox">
+                        <div class="header">
+                            <input type="text" [(ngModel)]="currencieToSearch" name="searchCurrencie" #searchCurrencie="ngModel" placeholder="{{'Search' | translate}}" />
+                        </div>
+                        <div class="currencies_wrapper">
+                            <div class="currencie" *ngFor="let currencie of filterCurrencies()" (click)="changeCurrencie(currencie)">
+                                <span class="name">{{currencie?.name}}</span>
+                                <img [src]="currencie?.image" [alt]="currencie?.fullName">
+                                <span class="fullName">{{currencie?.fullName}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="currencieInfo">
+                    <span>
+                        <strong>{{'Minimum amount' | translate}}:</strong>
+                        {{minAmount | number:'1.2-8'}}
+                    </span>
+                    <span>
+                        <strong>{{'Number of confirmations' | translate}}:</strong>
+                        {{fromCurrency?.payinConfirmations}}
+                    </span>
+                </div>
+                <div class="youGet">
+                    <span class="title">{{'You Get' | translate}}</span>
+                    <span class="amount">
+                        ≈
+                        <strong>{{amountToReceive | number:'1.2-8'}}</strong>
+                    </span>
+                    <span class="currency">SMART</span>
+                </div>
+                <div class="address form-input">
+                    <label for="smart">
+                        {{'SmartCash address' | translate}}
+                        <span class="required">*</span>
+                    </label>
+                    <input id="smart" type="text" [(ngModel)]="smartAddress" required name="smart" #smart="ngModel" />
+                    <span [hidden]="smart?.valid || smart?.pristine" class="alert alert-danger">{{'The SmartCash address is required' | translate}}</span>
+                    <div class="button-group">
+                        <button type="button" class="btn" data-toggle="modal" data-target="#modalQrCode" id="btnQrCode" (click)="startQR('smart');" *ngIf="hasQrCode">
+                            <i class="icon-select-all"></i>
+                        </button>
+                        <button type="button" class="btn" data-toggle="modal" data-target="#modalWallets">
+                            <i class="icon-account-balance-wallet"></i>
+                        </button>
+                        <button type="button" class="btn" data-toggle="modal" data-target="#myModalContact">
+                            <i class="icon-users"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="refound form-input">
+                    <label for="refunded">(<span class="uppercase">{{fromCurrency?.name}}</span>) {{'Refund address' | translate}}</label>
+                    <input id="refunded" type="text" [(ngModel)]="refundAddress" name="refunded" #refunded="ngModel" (ngModelChange)="validateRefund($event)" />
+                    <span [hidden]="!invalidRefoundAddress" class="alert alert-danger">{{'Invalid' | translate}} {{fromCurrency?.fullName}} {{'address' | translate}}</span>
+                </div>
+                <div class="extraFieldName form-input" *ngIf="fromCurrency?.extraFieldName">
+                    <label for="refunded">{{fromCurrency?.extraFieldName | translate}} ({{'required' | translate}})</label>
+                    <input id="refunded" type="text" required [(ngModel)]="extraFieldName" name="refundextraid" #refundextraid="ngModel" />
+                    <span *ngIf="refundextraid.invalid && (refundextraid.dirty || refundextraid.touched)" class="alert alert-danger">{{ fromCurrency?.extraFieldName | translate}} {{'is required' | translate}}</span>
+                </div>
+                <div class="form-input clear" *ngIf="_shared.user.is2FAEnabled && _shared.user.require2faToSend">
+                    <label for="2fa">
+                        {{'Two FA Code' | translate}}:
+                        <span class="required">*</span>
+                        <span [hidden]="code.valid || code.pristine" class="alert alert-danger">
+                            {{'A valid code is required.' | translate}}
+                        </span>
+                    </label>
+                    <input id="2fa" name="code" type="text" [(ngModel)]="code2fa" #code="ngModel" autocomplete="off" />
+                </div>
+                <button class="btn-exchange" type="submit" [disabled]="invalidRefoundAddress || exchangeProgress || !sendForm.form.valid">Exchange</button>
+                <svg *ngIf="exchangeProgress" class="exchangeProgress" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(300 50 50)">
+                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                    </path>
+                </svg>
+                <div class="buy-creditcard">
+                    <span class="or">{{'or' | translate}}</span>
+                    <span class="line">&nbsp;</span>
+                    <a href="https://changelly.com/exchange/USD/SMART/100" target="_blank">{{'Buy with Credit Card'}}</a>
+                </div>
+            </form>
+        </div>
+        <div class="card card-transaction" *ngIf="createdTransaction">
+            <span class="cardNumber">1</span>
+            <span class="cardTitle">{{'Payment' | translate}}</span>
+            <p><strong>Transaction Id: {{createdTransaction?.id}}</strong></p>
+            <p>1. Send <strong>{{amountToSend}} <span class="uppercase">{{fromCurrency.name}}</span></strong> to the provided address:</p>
+            <p class="payinAddress">
+                <span>{{createdTransaction?.payinAddress}}</span>
+                <button class="btn" type="button" [attr.data-clipboard-text]="createdTransaction?.payinAddress">
+                    <i class="icon-content-copy"></i>
+                </button>
+                <span *ngIf="fromCurrency?.extraFieldName"><br /><strong>{{fromCurrency?.extraFieldName}}</strong>: {{createdTransaction?.payinExtraId}}</span>
+                <button class="btn" type="button" [attr.data-clipboard-text]="createdTransaction?.payinExtraId">
+                    <i class="icon-content-copy"></i>
+                </button>
+                <qrcode [data]="createdTransaction?.payinAddress"></qrcode>
+                <span *ngIf="fromCurrency?.extraFieldName" class="alert alert-danger" style="color: red;font-weight: normal;">Don't forget to input <strong>{{fromCurrency?.extraFieldName}}</strong>. Otherwise, you may lose money.</span>
+            </p>
+            <p>2. Wait a few minutes for blockchain confirmation and exchange.</p>
+            <p>3. Receive estimated <strong>{{amountToReceive}} SMART</strong> to the address: <strong>{{createdTransaction?.payoutAddress}}</strong></p>
+            <p>Transaction Status:<br />{{createTransactionStatus}}</p>
+            <p>Number of confirmations:<br /> {{createdTransaction?.payinConfirmations || 0}} / {{currenciePayinConfirmations()}}</p>
+        </div>
+        <div class="card" *ngIf="myTransactionsList?.length">
+            <span class="cardNumber">2</span>
+            <span class="cardTitle">
+                {{'My Transactions' | translate}}
+                <svg *ngIf="transactionProgress" class="transactionProgress" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                <path fill="#F4B517" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(300 50 50)">
+                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                    </path>
+                </svg>
+            </span>
+            <div *ngFor="let transaction of myTransactionsList;let i = index;trackBy: trackByFn" class="transaction-item">
+                <div class="transaction-info-head">
+                    <div class="col1">
+                        <span class="status {{transaction?.status}}">
+                            <svg *ngIf="showStatusProgress(transaction?.status)" class="statusProgress" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                            <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(300 50 50)">
+                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                </path>
+                            </svg>
+                            {{transaction?.status}}
+                        </span>
+                    </div>
+                    <div class="col2">
+                        <span class="amount">{{transaction?.expectedAmount}}</span>
+                        <span class="currencie">{{transaction?.currencyFrom}} / {{transaction?.currencyTo}}</span>
+                        <span class="time">{{transaction?.createdAt | date: 'short'}}</span>
+                    </div>
+                    <span class="arrow" (click)="toggleViewer($event)">&nbsp;</span>
+                </div>
+                <div class="transaction-info-content">
+                    <div class="info-box">
+                        <div>
+                            <qrcode [data]="transaction?.payinAddress"></qrcode>
+                        </div>
+                        <div>
+                            <span class="label">{{"Pay in address" | translate}}</span>
+                            <span class="value">{{transaction?.payinAddress}}</span>
+                            <span class="label" *ngIf="transaction?.payinExtraId">{{getExtraIdLabel(transaction?.currencyFrom) | translate}}</span>
+                            <span class="value" *ngIf="transaction?.payinExtraId">{{transaction?.payinExtraId}}</span>
+                            <span class="label">{{"Number of confirmations" | translate}}</span>
+                            <span class="value">{{transaction?.payinConfirmations || 0}} / {{currenciePayinConfirmations(transaction?.currencyFrom)}}</span>
+                        </div>
+                    </div>
+                    <span class="label">{{"Transaction ID" | translate}}</span>
+                    <span class="value">{{transaction?.transactionId}} <i class="icon-delete" (click)="toggleDelete()"></i></span>
+                    <span class="delete">
+                        <span class="text">{{'Are you sure you want to delete this transaction?' | translate}}</span>
+                        <button (click)="deleteTransaction(transaction?.changellyId);toggleDelete()">
+                            <i class="icon-thumbs-up"></i>
+                            Yes
+                        </button>
+                        <button (click)="toggleDelete()">
+                            <i class="icon-thumbs-down"></i> No
+                        </button>
+                    </span>
+                    <span class="label">{{"Refunded address" | translate}}</span>
+                    <span class="value">{{transaction?.refundAddress}}</span>
+                    <span class="label">{{"SmartCash address" | translate}}</span>
+                    <span class="value">{{transaction?.payoutAddress}}</span>
+                    <span class="label">{{"Amount From" | translate}}</span>
+                    <span class="value">{{transaction?.amountFrom}} {{transaction?.currencyFrom}}</span>
+                    <span class="label">{{"Amount To" | translate}}</span>
+                    <span class="value">{{transaction?.amountTo}} {{transaction?.currencyTo}}</span>
+                    <span class="label">{{"Changelly Fee" | translate}}</span>
+                    <span class="value">{{transaction?.changellyFee}}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal animated fadeIn " id="modalQrCode" role="dialog" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" (click)="stopQR();">&times;</button>
+                    <h4 class="modal-title">{{'Scan your QR CODE' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe scrolling="no" id="iQR" src="" class="iframeQR"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="stopQR();">{{'Cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal animated fadeIn" id="modalWallets" role="dialog" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{_shared.wallet?.length}} {{'Wallets' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody *ngIf="_shared.wallet && _.size(_shared.wallet) > 0">
+                            <tr *ngFor="let wallet of getWallets()">
+                                <td class="contact">{{wallet.displayName}}</td>
+                                <td class="btn">
+                                    <button class='btn btn-select btn-yellow' (click)='selectWallet(wallet)'>
+                                        {{'Select' | translate}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="!_shared.wallet || _.size(_shared.wallet) == 0">
+                            <tr>
+                                <td>
+                                    <div class="alert alert-warning">{{'No wallets found.' | translate}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal animated fadeIn" id="myModalContact" role="dialog" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{contacts?.length}} {{'Contacts' | translate}}</h4>
+                    <a [routerLink]="['/contacts']">{{'Manage contacts' | translate}}</a>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody *ngIf="contacts && _.size(contacts) > 0">
+                            <tr *ngFor="let contact of contacts">
+                                <td class="contact">{{contact.name}}</td>
+                                <td class="btn">
+                                    <button class='btn btn-select btn-yellow' (click)='selectContact(contact)'>
+                                        {{'Select' | translate}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="!contacts || _.size(contacts) == 0">
+                            <tr>
+                                <td>
+                                    <div class="alert-box alert-warning">{{'No contacts found.' | translate}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

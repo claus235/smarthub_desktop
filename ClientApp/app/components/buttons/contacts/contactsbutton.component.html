@@ -1,0 +1,38 @@
+<button type="button" class="btn btn-action" data-toggle="modal" data-target="#myModalContact">
+    <i class="icon-users"></i>
+</button>
+<div class="modal animated fadeIn" id="myModalContact" role="dialog" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{contacts?.length}} {{'Contacts' | translate}}</h4>
+                <a [routerLink]="['/contacts']">{{'Manage contacts' | translate}}</a>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tbody *ngIf="contacts && contacts?.length">
+                        <tr *ngFor="let contact of listContacts()">
+                            <td class="contact">{{contact?.name}}</td>
+                            <td class="btn">
+                                <button class='btn btn-select btn-yellow' (click)='hideModal();onSelected.emit(contact?.address)'>
+                                    {{'Select' | translate}}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="!contacts || !contacts?.length">
+                        <tr>
+                            <td>
+                                <div class="alert-box alert-warning">{{'No contacts found.' | translate}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'Cancel' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

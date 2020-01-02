@@ -1,0 +1,3 @@
+<p *ngFor="let price of currentPrice">
+    {{'Current Price' | translate}}: ${{price.price_usd | number:'1.2-4'}} ({{price.price_btc | number:'1.2-8'}} BTC)
+</p>
