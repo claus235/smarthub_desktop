@@ -138,7 +138,7 @@ namespace webwallet.Controllers
         {
             try
             {
-                var url = this._config["AppApiDomain"] + "/api/user/my";
+                var url = this._config["AppApiDomain"] + "/api/user/info";
                 if (mock.HasValue && mock.Value)
                     url = "http://" + this.Request.Host.Value + ("/mocks/get-user.json");
 
@@ -225,24 +225,6 @@ namespace webwallet.Controllers
             catch (Exception ex)
             {
                 throw new Exception("Error to get the GetUserByName  =>  " + ex.Message);
-            }
-        }
-
-        [HttpGet("[action]")]
-        public async Task<dynamic> GetUserGeoIpLookUp()
-        {
-            try
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    var response = await httpClient.GetAsync("https://json.geoiplookup.io/api");
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    return stringResponse;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error to get the client geo ip lookup  =>  " + ex.Message);
             }
         }
 

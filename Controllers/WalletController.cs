@@ -49,7 +49,7 @@ namespace webwallet.Controllers
                 {
                     content.Headers.Clear();
                     content.Headers.Add("Content-Type", "application/json");
-                    content.Headers.Add("Authorization-Token", "mocPJh89MbxVVdNjar3DcUyxIvs6TTiX");
+                    content.Headers.Add("Authorization-Token", "");
                     var response = await httpClient.PostAsync("https://mailsmart.smartcash.cc/apiorder/createOrder", content);
                     dynamic token = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     return token;
@@ -292,6 +292,41 @@ namespace webwallet.Controllers
                     dynamic token = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     return token;
                 }
+            }
+        }
+
+        [HttpPost("[action]")]
+        public async Task<dynamic> Balances([FromBody] dynamic request)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync(this._config["SAPIDomain"] + "/v1/address/balances", content);
+                    return JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet("[action]/{address}/{pageNumber}")]
+        public async Task<dynamic> TXS(string address, string pageNumber)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync(this._config["ExpApiDomain"] + "/api/txs?address="+address+"&pageNum="+pageNumber);
+                    return JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

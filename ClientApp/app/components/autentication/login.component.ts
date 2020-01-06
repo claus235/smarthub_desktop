@@ -105,6 +105,7 @@ export class LoginComponent implements OnInit {
     async autoLogin() {
         this.inProgress = true;
         await this._user.getUser();
+        await this._shared.updateWalletBalance();
         if (!Util.isValidObject(this._shared.user)) {
             this._shared.logout();
         }
@@ -131,12 +132,9 @@ export class LoginComponent implements OnInit {
         this.isNative = (/AppName\/[0-9\.]+$/.test((<any>navigator).userAgent));
         this.isMobile = /iPhone|iPad|iPod|Android/i.test((<any>navigator).userAgent);
         let isExpired = this._baseStorage.getItemWithoutTime(this.getClientTokenCacheName);
-
-        if (!this._user.geoIpLookup) {
-            this._user.getUserGeoIpLookUp();
-        }
-
+        
         this._shared.dataStore.isAuthenticated = (Util.isValidObject(isExpired) && Util.isValidObject(isExpired.access_token));
+
         if (isExpired == null) {
             this._shared.logout();
             let param = this._route.snapshot.queryParams['returnUrl'];

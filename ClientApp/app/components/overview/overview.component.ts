@@ -42,7 +42,7 @@ export class OverviewComponent implements OnInit {
     ngOnInit() {
         // this._topmenu.titlePage = `Overview of my ${this._shared.wallet.length} wallets`;
         // this._user.getUser();
-        this.getNotifications();
+        // this.getNotifications();
     }
 
     editLabel(w: Wallet, index?: number) {
