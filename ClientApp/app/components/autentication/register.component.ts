@@ -33,6 +33,7 @@ export class RegisterComponent implements OnInit {
     public isNative = false;
     public isMobile = false;
     public _env = environment;
+    public codeConfirmKey: boolean = false;
 
     _hasQrCode: boolean = true;
     get hasQrCode(): boolean {
@@ -113,6 +114,10 @@ export class RegisterComponent implements OnInit {
 
     async ngOnInit() {
         await this._userService.getNewkey();
+        this.inProgress = false;
+        jQuery(document).bind("contextmenu cut copy",function(e){
+            e.preventDefault();
+        });
     }
 
     public confirmPassword() {
@@ -121,6 +126,11 @@ export class RegisterComponent implements OnInit {
 
     public confirmKey() {
         this.isRecoveryKeyEqual = this._shared.recoveryKey.recoveryKey === this.userInfoExtended.key_confirmation;
+        if(this._shared.recoveryKey.recoveryKey === this.userInfoExtended.key_confirmation) {
+            this.codeConfirmKey = true;
+        } else {
+            this.codeConfirmKey = false;
+        }
     }
 
     async onSubmit() {
@@ -143,7 +153,7 @@ export class RegisterComponent implements OnInit {
             this.userInfo.termsVersion = null!;
         }
 
-        this.inProgress = false;
+        // this.inProgress = false;
         this.sending = false;
         this.sendButtonText = this.sendText;
     }
@@ -183,6 +193,10 @@ export class RegisterComponent implements OnInit {
                 this.showInfoPanel = true;
             }
         }
+    }
+
+    async securityCodeConfirm() {
+        this.inProgress = true;
     }
 
     redirectIfAuthenticated() {

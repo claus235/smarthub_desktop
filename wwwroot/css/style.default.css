@@ -899,6 +899,10 @@ bs-datepicker-container, bs-daterangepicker-container {
         height: auto;
     }
 
+    .page-register .modal-footer.reverse {
+        flex-direction: row-reverse;
+    }
+
         .page-register .modal-footer .terms {
             display: table-cell;
             vertical-align: middle;
