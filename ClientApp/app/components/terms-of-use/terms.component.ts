@@ -1,31 +1,16 @@
-import { SharedService } from '../../services/shared-service.service';
-import { CurrencyPipe } from '@angular/common/src/pipes/number_pipe';
-import { CurrentPrice } from '../../models/data/current-price.model';
-import { CurrentPriceService } from '../../services/current-price.service';
-import { Component, Inject, OnInit } from '@angular/core';
-import { CoolLocalStorage } from "angular2-cool-storage";
-import { BaseLocalStorageService } from "../../services/base-localstore.service";
-import { WalletService } from "../../services/wallet.service";
-import { UserService } from "../../services/user.service";
-import { Util } from "../../models/util";
-import { Location } from '@angular/common';
-import { RecoveryKey } from '../../models/response/key-response.model';
+import { Component } from '@angular/core';
+import { TranslateService } from 'ng2-translate';
 
 @Component({
     selector: 'terms',
     templateUrl: './terms.component.html'
 })
 export class TermsOfUseComponent {
-    public recoveryKey: any;
+    
+    constructor(private translateService: TranslateService) {}
 
-    constructor(
-        protected _location: Location,
-        private _shared: SharedService,
-        private _user: UserService
-    ) {
-        this.onInit();
+    get termsText() {
+        return this.translateService.instant('termsText');
     }
-    async onInit() {
-        this.recoveryKey = await this._user.getNewkey();
-    }
+    
 }
