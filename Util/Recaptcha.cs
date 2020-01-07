@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
@@ -7,13 +8,13 @@ namespace webwallet
 {
     public static class Recaptcha
     {
-        public static bool IsValid(string response, IHostingEnvironment env)
+        public static bool IsValid(string response, IHostingEnvironment env, IConfiguration _config)
         {
             if (env.IsDevelopment()) return true;
             if (string.IsNullOrEmpty(response)) return false;
 
             var retorno = true;
-            var reCAPTCHA_SecretKey = "";
+            var reCAPTCHA_SecretKey = _config["RecaptchaSecretKey"];
             var urlPost = "https://www.google.com/recaptcha/api/siteverify";
 
             using (var client = new WebClient())

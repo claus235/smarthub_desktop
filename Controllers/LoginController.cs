@@ -29,7 +29,7 @@ namespace webwallet.Controllers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            /*if (!Recaptcha.IsValid(request.responseRecaptcha, _env))
+            /*if (!Recaptcha.IsValid(request.responseRecaptcha, _env, _config))
             {
                 ClientToken ct = new ClientToken();
                 ct.error = "Invalid captcha validation";
