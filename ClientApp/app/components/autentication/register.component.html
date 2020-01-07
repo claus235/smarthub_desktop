@@ -125,7 +125,7 @@
 
                     <div class="gauth-pwa clearfix">
                         <div class="gauth">
-                            <re-captcha *ngIf="_env.showCaptcha" (resolved)="resolved($event)" siteKey="" [(ngModel)]="formModel.captcha" name="captcha2" #captcha="ngModel"></re-captcha>
+                            <re-captcha *ngIf="_env.showCaptcha" (resolved)="resolved($event)" [siteKey]="recaptchaKey" [(ngModel)]="formModel.captcha" name="captcha2" #captcha="ngModel"></re-captcha>
                         </div>
                     </div>
                     <div class="alert-box alert-danger" *ngIf="!errorMessage && errorMessage.length > 0">

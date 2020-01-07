@@ -263,4 +263,8 @@ export class RegisterComponent implements OnInit {
     async stopQR() {
         $("#iQR").attr("src", "");
     }
+
+    get recaptchaKey() {
+        return environment.recaptchaKey;
+    }
 }

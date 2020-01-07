@@ -33,7 +33,7 @@ namespace webwallet.Controllers
                 throw new ArgumentNullException(nameof(request));
             }
             /*string responseRecaptcha = request.responseRecaptcha;
-            if (!Recaptcha.IsValid(responseRecaptcha, _env))
+            if (!Recaptcha.IsValid(responseRecaptcha, _env, _config))
             {
                 var createResponse = new
                 {

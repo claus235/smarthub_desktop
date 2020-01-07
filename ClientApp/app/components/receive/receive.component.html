@@ -27,7 +27,7 @@
     <div class="page-wrapper">
         <div class="card card-1 walletInfo" *ngIf="currentWallet?.address">
             <span class="displayName">{{'Use the address below to receive SMART.' | translate}}</span>
-            <qrcode *ngIf="currentWallet?.qrCode" [data]="currentWallet.address"></qrcode>
+            <qrcode [data]="getQrCodeUrl()"></qrcode>
             <div class="walletInfoWrapper">
                 <div>
 
@@ -52,8 +52,6 @@
                                required
                                autocomplete="off"
                                (ngModelChange)="recalculateAmountWithFee($event)"
-                               (input)="onAmountChange($event)"
-                               (keypress)="onAmountChange($event)"
                                mask='0*.00000000'
                                [dropSpecialCharacters]="false" />
                     </div>
@@ -74,6 +72,5 @@
                 </div>
             </div>
         </div>
-        <!-- <smartshift-cards class="page-changelly" *ngIf="currentWallet.position === 1 && !currentWallet.isRewards && !currentWallet.isVault"></smartshift-cards> -->
     </div>
 </div>

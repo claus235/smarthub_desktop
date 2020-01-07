@@ -49,8 +49,8 @@ namespace webwallet.Controllers
                 {
                     content.Headers.Clear();
                     content.Headers.Add("Content-Type", "application/json");
-                    content.Headers.Add("Authorization-Token", "");
-                    var response = await httpClient.PostAsync("https://mailsmart.smartcash.cc/apiorder/createOrder", content);
+                    content.Headers.Add("Authorization-Token", this._config["MailAPISecret"]);
+                    var response = await httpClient.PostAsync(this._config["MailAPIDomain"] + "/apiorder/createOrder", content);
                     dynamic token = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     return token;
                 }
@@ -121,9 +121,7 @@ namespace webwallet.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //var response = await httpClient.GetAsync("https://api.coinmarketcap.com/v1/ticker/smartcash/?convert=USD");
-                    var response = await httpClient.GetAsync("https://api.smartcash.cc/v1d/exchange/currencies?currencies=usd,btc");
-
+                    var response = await httpClient.GetAsync(this._config["ApiDomain"] + "/v1d/exchange/currencies?currencies=usd,btc");
                     return JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                 }
             }
@@ -140,7 +138,7 @@ namespace webwallet.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync("https://api.smartcash.cc/v1/exchange/currencies?limit=1");
+                    var response = await httpClient.GetAsync(this._config["ApiDomain"] + "/v1/exchange/currencies?limit=1");
                     var priceJson = await response.Content.ReadAsStringAsync();
                     var json = JObject.Parse(priceJson.Replace("[", "").Replace("]", ""));
                     return json["items"]["currencies"];

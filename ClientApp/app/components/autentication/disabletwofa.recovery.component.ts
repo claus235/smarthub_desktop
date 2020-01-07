@@ -8,6 +8,7 @@ import { Util } from '../../models/util';
 import { BaseLocalStorageService } from '../../services/base-localstore.service';
 import { DeviceDetectorService } from '../../modules/ngx-device-detector/device-detector.service';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../app.environment';
 
 @Component({
     selector: 'disabletwofa-recovery',
@@ -124,5 +125,9 @@ export class DisableTwoFaRecoveryComponent implements OnInit {
 
     async stopQR() {
         $("#iQR").attr("src", "");
+    }
+
+    get recaptchaKey() {
+        return environment.recaptchaKey;
     }
 }

@@ -1,6 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
-import { WalletService } from "../../services/wallet.service";
 import { Wallet } from "../../models/data/walletv2.data.model";
 import { SharedService } from '../../services/shared-service.service';
 import { ActivatedRoute } from '@angular/router';
@@ -57,11 +55,12 @@ export class ReceiveComponent implements OnInit {
     }
 
     getQrCodeUrl() {
+        const url = `smartcash:${this.currentWallet.address}`;
         if (this.sendQrCode.amountWithConversion == 0) {
-            return this.currentWallet.qrCode;
+            return url;
         }
         else {
-            return this.currentWallet.qrCode + "&amount=" + this.sendQrCode.amountWithConversion
+            return url + "&amount=" + this.sendQrCode.amountWithConversion
         }
     }
 
