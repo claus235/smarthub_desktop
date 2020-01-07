@@ -156,7 +156,12 @@ export class LoginComponent implements OnInit {
     async startQR() {
         $("#iQR").attr("src", "qr/qrcode/index.html?password");
     }
+    
     async stopQR() {
         $("#iQR").attr("src", "");
+    }
+
+    get recaptchaKey() {
+        return environment.recaptchaKey;
     }
 }
