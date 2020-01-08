@@ -1,5 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { Http } from '@angular/http';
+import { Component, Inject } from '@angular/core';
 import { SharedService } from '../../services/shared-service.service';
 import { Wallet } from '../../models/data/walletv2.data.model';
 import { WalletRequest } from '../../models/request/wallet-request.model';
@@ -13,7 +12,7 @@ import Swal from 'sweetalert2';
     selector: 'overview',
     templateUrl: './overview.component.html'
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent {
     constructor(
         @Inject('BASE_URL') public baseUrl: string,
         public _shared: SharedService,
@@ -37,12 +36,6 @@ export class OverviewComponent implements OnInit {
 
     set inProgress(value: boolean) {
         this._inProgress = value;
-    }
-
-    ngOnInit() {
-        // this._topmenu.titlePage = `Overview of my ${this._shared.wallet.length} wallets`;
-        // this._user.getUser();
-        // this.getNotifications();
     }
 
     editLabel(w: Wallet, index?: number) {

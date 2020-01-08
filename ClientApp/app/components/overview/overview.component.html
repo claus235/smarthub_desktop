@@ -1,40 +1,30 @@
 <top-menu></top-menu>
 <nav-menu></nav-menu>
 <nav-bottom></nav-bottom>
+
 <div class="page page-overview">
-    <div class="alert-box alert-warning text-center"
-         *ngIf="!_shared?.user?.is2FAEnabled">
-        <p>
-            {{'Your account security is our top priority! Protect your account by enabling 2FA' | translate}}
-            <a routerLink="/settings">{{'here' | translate}}</a>
-        </p>
+
+    <div *ngIf="!_shared?.user?.is2FAEnabled" class="alert-box alert-warning text-center" >
+        <span>{{'Your account security is our top priority! Protect your account by enabling 2FA' | translate}}</span>
+        <a routerLink="/settings">{{'here' | translate}}</a>
     </div>
-    <div class="alert-box alert-warning text-center"
-         *ngIf='notifications?.length'>
-        <p *ngFor="let notification of notifications">{{notification}}</p>
-    </div>
+
     <div class="page-legend">
         <span>{{'Here are your' | translate}} {{_shared.wallet.length}} {{'smartcash addresses. You can use them to receive and send smartcash' | translate}}</span>
-        <div class="buttons">
-            <a class="changelly" [routerLink]="['/changelly']">
-                <i class="icon-changelly"></i>
-                <span>{{'Changelly' | translate}}</span>
-            </a>
-            <!-- <a class="smartshift" [routerLink]="['/smartshift']">
-              <i class="icon-smartshift"></i>
-              <span>{{'SmartShift' | translate}}</span>
-            </a> -->
-        </div>
     </div>
+
     <div class="card-address-wrap">
         <div class="card-address" *ngFor="let w of getWallets(); let _index = index">
+
             <div class="card-body">
                 <div class="icon_address icon_address-{{_index}}" [ngClass]="{'icon_addres--vault': w.isVault}">
-                    <i [ngClass]="{
-              'icon-account-balance-wallet': !w.isVault && !w.isScheduled,
-              'icon-vault': w.isVault,
-              'icon-calendar': w.isScheduled
-            }"></i>
+                    <i
+                        [ngClass]="{
+                            'icon-account-balance-wallet': !w.isVault && !w.isScheduled,
+                            'icon-vault': w.isVault,
+                            'icon-calendar': w.isScheduled
+                        }"
+                    ></i>
                 </div>
                 <div class="balanceInfo">
                     <span class="balance">Σ {{w.balance | number:'1.2-4'}}</span>
@@ -42,9 +32,9 @@
                 </div>
                 <div class='btn'>
                     <button class="icon-edit" (click)='editLabel(w, _index)'></button>
-                    <!-- <button *ngIf="!w.isVault && !w.isScheduled" class="icon-card" (click)='goToCards(w)'></button> -->
                 </div>
             </div>
+
             <div class="card-bottom">
                 <div>
                     <span class="address-title">{{'Address' | translate}}</span>
@@ -54,17 +44,21 @@
                     <i class="icon-content-copy"></i>
                 </button>
             </div>
+
         </div>
     </div>
+
     <div class="modal-form" *ngIf="!inProgress && openForm && (!response || response.status !== 'OK')">
         <form class="animated fadeIn" (ngSubmit)="onSubmit()" #sendForm="ngForm">
+            
             <div class="modal-header">
                 <button (click)="openForm = false">x</button>
-                <p>Σ {{walletRequest.balance | number:'1.2-4'}}</p>
+                <span>Σ {{walletRequest.balance | number:'1.2-4'}}</span>
                 <div class="icon_address icon_address-{{address_index}}">
                     <i class="icon-account-balance-wallet"></i>
                 </div>
             </div>
+
             <div class="modal-body">
                 <div class="form-input">
                     <label for="name">{{'Address Name' | translate}}:</label>
@@ -83,10 +77,13 @@
                     <label for="isRewards" *ngIf="!walletRequest.isRewards">{{'Not Smart Rewards Address' | translate}}</label>
                 </div>
             </div>
+
             <div class="modal-bottom">
                 <button type="submit" class="btn btn-secondary" (click)="cancelEdit()">{{'Cancel' | translate}}</button>
                 <button type="submit" class="btn btn-primary" [disabled]="!sendForm.form.valid || inProgress">{{'Save' | translate}}</button>
             </div>
+
         </form>
     </div>
+
 </div>
