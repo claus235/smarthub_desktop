@@ -93,9 +93,9 @@ export class LoginComponent implements OnInit {
                 await this.setIsAuthenticated();
                 this.redirectIfAuthenticated();
             }
-            if (!this._shared.isAuthenticated && this._shared.token.error !== null) { this.ErrorMessage = this._shared.token.error_description; /*grecaptcha.reset();*/ }
+            if (!this._shared.isAuthenticated && this._shared.token.error !== null) { this.ErrorMessage = this._shared.token.error_description; grecaptcha.reset(); }
         } catch (e) {
-            //grecaptcha.reset();
+            grecaptcha.reset();
             this.ErrorMessage = "Invalid user or password";
         } finally {
             this.inProgress = false;

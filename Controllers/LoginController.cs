@@ -29,13 +29,13 @@ namespace webwallet.Controllers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            /*if (!Recaptcha.IsValid(request.responseRecaptcha, _env, _config))
+            if (!Recaptcha.IsValid(request.responseRecaptcha, _env, _config))
             {
                 ClientToken ct = new ClientToken();
                 ct.error = "Invalid captcha validation";
                 ct.error_description = "Invalid captcha validation";
                 return ct;
-            }*/
+            }
 
             var BaseURL = this._config["AppApiDomain"] + "/api/user/authenticate";
 
