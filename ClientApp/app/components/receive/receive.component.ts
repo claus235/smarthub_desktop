@@ -60,7 +60,7 @@ export class ReceiveComponent implements OnInit {
             return url;
         }
         else {
-            return url + "&amount=" + this.sendQrCode.amountWithConversion
+            return url + "?amount=" + this.sendQrCode.amountWithConversion
         }
     }
 
