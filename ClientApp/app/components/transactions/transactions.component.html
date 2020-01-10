@@ -48,7 +48,7 @@
                 </div>
                 <div class="amount">
                     <span *ngFor="let price of currentPrice">
-                        <strong>Σ {{amount(transaction) | number:'1.2-8'}}</strong> ($ {{amount(transaction) * price.price_usd | number:'1.2-4'}})
+                        <strong>Σ {{getAmount(transaction) | number:'1.2-8'}}</strong> ($ {{getAmount(transaction) * price.price_usd | number:'1.2-4'}})
                     </span>
                     <div class="timestamp">{{ transaction.timestamp | date:'short'}}</div>
                 </div>
