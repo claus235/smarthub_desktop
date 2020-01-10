@@ -623,6 +623,11 @@ bs-daterangepicker-container {
   overflow: hidden;
 }
 
+.page-login .modal.absolute-center {
+  bottom: inherit !important;
+  top: 50px !important;
+}
+
 .page-login .modal.modalError {
   height: 655px;
 }
@@ -826,6 +831,7 @@ bs-daterangepicker-container {
 }
 
 .page-register .modal {
+  height: auto;
   width: 910px;
   border-radius: 4px;
   background-color: #ffffff;
@@ -839,6 +845,8 @@ bs-daterangepicker-container {
 
 .page-register .login-disclaimer {
   background: #fcd03f url(/img/SmartCash_wraper.png) center center no-repeat;
+  display: table-cell;
+  float: none;
 }
 
 .page-register .modal-body {
@@ -6823,6 +6831,11 @@ withdraw .box-card .fiatAmount {
     height: 100%;
     overflow-y: auto;
     position: relative;
+  }
+
+  .page-login .modal.absolute-center {
+    bottom: inherit !important;
+    top: 50px !important;
   }
 
   .page-login .modal,
