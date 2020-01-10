@@ -33,11 +33,11 @@
         <div class="card" *ngFor="let transaction of getTransactions();trackBy: trackByFn">
             <div class="transaction-header">
                 <div class="status {{direction(transaction)}}" [ngClass]="{'awaiting': transaction.confirmations === 0}">
-                    <span *ngIf="direction(transaction) === 'Received'">
+                    <span *ngIf="direction(transaction) === 'Received' && transaction.confirmations !== 0">
                         <i class="icon-price-min"></i>
-                        <span class="type">{{'Receive' | translate}}</span>
+                        <span class="type">{{'Received' | translate}}</span>
                     </span>
-                    <span *ngIf="direction(transaction) === 'Sent'">
+                    <span *ngIf="direction(transaction) === 'Sent' && transaction.confirmations !== 0">
                         <i class="icon-price-max"></i>
                         <span class="type">{{'Paid' | translate}}</span>
                     </span>
