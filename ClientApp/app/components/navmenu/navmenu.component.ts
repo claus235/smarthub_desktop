@@ -8,13 +8,13 @@ import { TranslateService } from 'ng2-translate';
     templateUrl: './navmenu.component.html'
 })
 export class NavMenuComponent {
-    public showNavbar: boolean;
+
     public navMenuList = NavMenuList;
     
     constructor(
         public _topmenu: TopMenuService, private translateService: TranslateService
     ) {
-        this.showNavbar = _topmenu._showNavbar;
+        
     }
 
     translate(key: string) {
@@ -23,5 +23,9 @@ export class NavMenuComponent {
 
     trackByFn(index: number) {
         return index;
+    }
+
+    get showNavbar() {
+        return this._topmenu._showNavbar;
     }
 }
