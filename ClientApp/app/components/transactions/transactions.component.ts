@@ -106,7 +106,7 @@ export class TransactionsComponent implements OnInit {
     let sent = 0.0;
     for (let i = 0; i < outputs.length; i++) {
       let output = outputs[i];
-      if (!output.scriptPubKey.addresses.includes(this.currentWallet.address)) {
+      if (output.scriptPubKey.addresses && !output.scriptPubKey.addresses.includes(this.currentWallet.address)) {
         sent += parseFloat(output.value);
       }
     }
@@ -117,7 +117,7 @@ export class TransactionsComponent implements OnInit {
     let received = 0.0;
     for (let i = 0; i < outputs.length; i++) {
       let output = outputs[i];
-      if (output.scriptPubKey.addresses.includes(this.currentWallet.address)) {
+      if (output.scriptPubKey.addresses && output.scriptPubKey.addresses.includes(this.currentWallet.address)) {
         received += parseFloat(output.value);
       }
     }
