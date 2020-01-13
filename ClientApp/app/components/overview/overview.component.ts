@@ -5,7 +5,6 @@ import { WalletRequest } from '../../models/request/wallet-request.model';
 import { TopMenuService } from '../../services/topmenu.service';
 import { CardService } from '../../services/card.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,8 +17,7 @@ export class OverviewComponent {
         public _shared: SharedService,
         public _topmenu: TopMenuService,
         public _card: CardService,
-        private router: Router,
-        private _user: UserService
+        private router: Router
     ) { }
 
     public walletRequest: Wallet;
@@ -99,4 +97,25 @@ export class OverviewComponent {
             }
         });
     }
+
+    async createLockedAddress() {
+        const body = {
+            "DisplayName": "Salary",
+            "isRewards": false,
+            "RecoveryKey": "",
+            "UserKey": ""
+        };
+        await this._shared.post('api/wallet/createlockedaddress', body)
+            .then((data: any) => {
+                Swal({
+                    type: 'success',
+                    text: 'Locked wallet has created with success',
+                    customClass: 'animated fadeInDown',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    timer: 3000
+                }); 
+            });
+    }
+
 }

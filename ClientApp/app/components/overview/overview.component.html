@@ -9,6 +9,12 @@
         <a routerLink="/settings">{{'here' | translate}}</a>
     </div>
 
+    <div class="buttons">
+        <button (click)="createLockedAddress()">
+            {{ 'new-locked-address' | translate }}
+        </button>
+    </div>
+
     <div class="page-legend">
         <span>{{'Here are your' | translate}} {{_shared.wallet.length}} {{'smartcash addresses. You can use them to receive and send smartcash' | translate}}</span>
     </div>
