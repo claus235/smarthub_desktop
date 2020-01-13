@@ -32,8 +32,8 @@ namespace webwallet.Controllers
             {
                 throw new ArgumentNullException(nameof(request));
             }
-            /*string responseRecaptcha = request.responseRecaptcha;
-            if (!Recaptcha.IsValid(responseRecaptcha, _env))
+            string responseRecaptcha = request.responseRecaptcha;
+            if (!Recaptcha.IsValid(responseRecaptcha, _env, _config))
             {
                 var createResponse = new
                 {
@@ -42,7 +42,7 @@ namespace webwallet.Controllers
                 };
 
                 return createResponse;
-            }*/
+            }
 
             using (var httpClient = new HttpClient())
             {
@@ -138,7 +138,7 @@ namespace webwallet.Controllers
         {
             try
             {
-                var url = this._config["AppApiDomain"] + "/api/user/my";
+                var url = this._config["AppApiDomain"] + "/api/user/info";
                 if (mock.HasValue && mock.Value)
                     url = "http://" + this.Request.Host.Value + ("/mocks/get-user.json");
 
@@ -228,24 +228,6 @@ namespace webwallet.Controllers
             }
         }
 
-        [HttpGet("[action]")]
-        public async Task<dynamic> GetUserGeoIpLookUp()
-        {
-            try
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    var response = await httpClient.GetAsync("https://json.geoiplookup.io/api");
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    return stringResponse;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error to get the client geo ip lookup  =>  " + ex.Message);
-            }
-        }
-
         [HttpPost("[action]")]
         public async Task<dynamic> PasswordReset([FromBody] ClientResetPasswordRequest request)
         {
@@ -253,15 +235,16 @@ namespace webwallet.Controllers
             {
                 throw new ArgumentNullException(nameof(request));
             }
-
+            
             var postData = new List<KeyValuePair<string, string>>();
-            postData.Add(new KeyValuePair<string, string>("client_id", ""));
-            postData.Add(new KeyValuePair<string, string>("client_secret", ""));
+            postData.Add(new KeyValuePair<string, string>("client_id", this._config["client_id"]));
+            postData.Add(new KeyValuePair<string, string>("client_secret", this._config["client_secret"]));
+            postData.Add(new KeyValuePair<string, string>("client_type", "webclient"));
             postData.Add(new KeyValuePair<string, string>("grant_type", "password"));
             postData.Add(new KeyValuePair<string, string>("username", request.username));
             postData.Add(new KeyValuePair<string, string>("password", request.password));
             postData.Add(new KeyValuePair<string, string>("TwoFactorAuthentication", request.twoFactorAuthentication));
-            postData.Add(new KeyValuePair<string, string>("recoveryKey", request.recoveryKey));
+            postData.Add(new KeyValuePair<string, string>("client_ip", this.Request.HttpContext.Connection.RemoteIpAddress.ToString()));
 
             using (var httpClient = new HttpClient())
             {
@@ -332,28 +315,5 @@ namespace webwallet.Controllers
                 }
             }
         }
-
-        /*
-                [HttpPost("[action]")]
-                public async Task<dynamic> PasswordReset([FromBody] dynamic request)
-                {
-                    if (request == null)
-                    {
-                        throw new ArgumentNullException(nameof(request));
-                    }
-
-                    using (var httpClient = new HttpClient())
-                    {
-                        using (var content = new StringContent(JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json"))
-                        {
-                            content.Headers.Clear();
-                            content.Headers.Add("Content-Type", "application/json");
-                            var response = await httpClient.PostAsync("", content);
-                            var token = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                            return token;
-                        }
-                    }
-                }
-         */
     }
 }

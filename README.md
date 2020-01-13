@@ -61,3 +61,35 @@ WEbPack global is 3.12.0
 
 nvm use 6
 webpack && dotnet run
+
+
+Config Json
+{
+    "Logging": {
+        "IncludeScopes": false,
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        },
+        "Console": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
+    "AppSettings": {},
+    "AppApiDomain": "http://localhost:60090",
+    "AppApiDomainTest": "http://localhost:60090",
+    "SAPIDomain": "https://sapi2.smartcash.org",
+    "ExpApiDomain": "https://insight.smartcash.cc",
+    "client_id": "",
+    "client_secret": "",
+    "MailAPIDomain": "",
+    "MailAPISecret": "",
+    "ApiDomain": "",
+    "RecaptchaSecretKey":"",
+    "ApplicationInsights": {
+        "InstrumentationKey": ""
+    }
+}

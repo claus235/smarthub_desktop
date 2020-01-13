@@ -44,7 +44,7 @@
                 </div>
                 <div class="gauth-pwa clearfix">
                     <div class="gauth">
-                        <re-captcha *ngIf="_env.showCaptcha" (resolved)="resolved($event)" siteKey="" required [(ngModel)]="formModel.captcha" name="captcha" #captcha="ngModel"></re-captcha>
+                        <re-captcha *ngIf="_env.showCaptcha" (resolved)="resolved($event)" [siteKey]="recaptchaKey" required [(ngModel)]="formModel.captcha" name="captcha" #captcha="ngModel"></re-captcha>
                     </div>
                 </div>
                 <div *ngIf="ErrorMessage" class="alert-box alert-danger" role="alert" style="margin: 0 30px;">{{ ErrorMessage }}</div>

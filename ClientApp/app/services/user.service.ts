@@ -2,18 +2,14 @@ import { Util } from '../models/util';
 import { TokenRequest } from '../models/request/token-request.model';
 import { TokenResponse } from '../models/response/token-response.model';
 import { RecoveryKey } from '../models/response/key-response.model';
-
-import { async } from 'rxjs/scheduler/async';
 import { UserRequest } from '../models/request/user.request.model';
 import { SharedService } from './shared-service.service';
 import { Injectable, Inject } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from "rxjs/Observable";
+import { Http, Response } from '@angular/http';
 import { User } from "../models/user.model";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Wallet } from '../models/data/walletv2.data.model';
-import { GeoIpLookUp } from '../models/response/geoiplookup';
 
 @Injectable()
 export class UserService {
@@ -81,10 +77,6 @@ export class UserService {
     }
 
     async getUserToken(user: TokenRequest) {
-        
-        
-
-        
         let tokenFromCache = await this._shared.cacheGetWithoutTime(this.getClientTokenCacheName);
 
         if (Util.isValidObject(tokenFromCache)) {
@@ -183,15 +175,5 @@ export class UserService {
             }).catch(function (e) {
                 console.log(e);
             });
-    }
-
-    getUserGeoIpLookUp() {
-        
-        
-        
-        
-        
-        
-        this.geoIpLookup = {};
     }
 }

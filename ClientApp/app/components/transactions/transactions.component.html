@@ -1,4 +1,4 @@
-<div class="wallets currentWallet">
+<div class="wallets currentWallet" *ngIf="currentWallet">
     <button class="wallet" (click)="showWallets = !showWallets">
         <div class="icon_address icon_address-{{walletIndex}}" [ngClass]="{'icon_addres--vault': currentWallet.isVault}">
             <i *ngIf="!currentWallet.isVault" class="icon-account-balance-wallet"></i>
@@ -9,17 +9,13 @@
         <span class="address">{{currentWallet.address}}</span>
     </button>
 </div>
-<div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}">
+<div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}" *ngIf="_shared.wallet && currentWallet">
     <button class="wallet"
             *ngFor="let w of _shared.wallet; let _index = index"
             (click)="setWallet(w, _index)"
             [ngClass]="{'actived': currentWallet.address === w.address}">
         <div class="icon_address icon_address-{{_index}}" [ngClass]="{'icon_addres--vault': w.isVault}">
-            <i [ngClass]="{
-          'icon-account-balance-wallet': !w.isVault && !w.isScheduled,
-          'icon-vault': w.isVault,
-          'icon-calendar': w.isScheduled
-        }"></i>
+            <i [ngClass]="{'icon-account-balance-wallet': !w.isVault && !w.isScheduled, 'icon-vault': w.isVault, 'icon-calendar': w.isScheduled}"></i>
         </div>
         <span class="balance">Σ {{w.balance | number:'1.2-8'}}</span>
         <span class="displayName">{{w.displayName}}</span>
@@ -29,184 +25,40 @@
     </button>
 </div>
 <div class="page-wrapper">
-    <div class="filter filter-scheduled" *ngIf="getScheduledList.length || getRecurringList.length">
-        <button [ngClass]="{'active': filterScheduled === 'Transactions'}" (click)="filterScheduled = 'Transactions';clearResponse()">
-            {{'Transactions' | translate}}
-        </button>
-        <button [ngClass]="{'active': filterScheduled === 'Scheduled'}" (click)="filterScheduled = 'Scheduled';clearResponse()" *ngIf="getScheduledList?.length">
-            {{'Scheduled' | translate}}
-            <sup class="count-label">{{getScheduledList?.length}}</sup>
-        </button>
-        <button [ngClass]="{'active': filterScheduled === 'Recurring'}" (click)="filterScheduled = 'Recurring';clearResponse()" *ngIf="getRecurringList?.length">
-            {{'Recurring' | translate}}
-            <sup class="count-label">{{getRecurringList?.length}}</sup>
-        </button>
+    <div class="filter all-transactions" role="alert">
+        <button *ngFor="let filter of filters" [ngClass]="{'active': filterType === filter}" (click)="filterType = filter">{{filter | translate}}</button>
     </div>
-    <div *ngIf="response && !response.isValid" class="card" role="alert">
-        <div class="alert-box alert-danger">
-            {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
-        </div>
-    </div>
-    <div *ngIf="response && response.isValid" class="card" role="alert">
-        <div class="alert-box alert-success">
-            {{'Status' | translate}}: {{'The transaction has been canceled' | translate}}
-        </div>
-    </div>
-    <div *ngIf="filterScheduled === 'Scheduled'">
-        <app-spinner></app-spinner>
-        <div class="transactions">
-            <div *ngFor="let scheduled of getScheduledList;let i = index" [attr.index]="i" class="card">
-                <div class="transaction-header" [ngClass]="{'notEnoughFunds': scheduled?.canBePaid === false && scheduled.status === 'Created'}">
-                    <div class="status {{scheduled?.status}}">
-                        <span class="type">{{scheduled?.status}}</span>
-                    </div>
-                    <div class="amount">
-                        <span class="notEnoughFundsLabel" *ngIf="scheduled?.canBePaid === false && scheduled.status === 'Created'"><i class="icon icon-dollar-sign-and-piles-of-coins"></i>{{'Not enough funds' | translate}}</span>
-                        <span *ngFor="let price of currentPrice">
-                            <strong *ngIf="scheduled.currency == 'SMART'">Σ {{scheduled?.amount | number:'1.2-8'}}</strong>
-                            <span *ngIf="scheduled.currency == 'SMART'">($ {{scheduled?.amount * price.price_usd | number:'1.2-4'}})</span>
-                            <strong *ngIf="scheduled.currency !== 'SMART'">{{scheduled?.currency}} {{scheduled?.amount | number:'1.2-4'}}</strong>
-                            <span *ngIf="scheduled.currency !== 'SMART'">(Σ {{scheduled?.amountSmart | number:'1.2-8'}})</span>
-                        </span>
-                        <span>{{scheduled?.dateShipped | date:'short'}}</span>
-                    </div>
-                    <span class="notEnoughFundsLabel" *ngIf="scheduled?.canBePaid === false && scheduled.status === 'Created'"><i class="icon icon-dollar-sign-and-piles-of-coins"></i>{{'Not enough funds' | translate}}</span>
-                    <span class="arrow" (click)="toggleViewer($event)"></span>
-                </div>
-                <div class="transaction-body">
-                    <strong>{{'Status' | translate}}</strong>
-                    <span>{{scheduled?.status}}</span>
-                    <strong *ngIf="scheduled?.reason">{{'Reason' | translate}}</strong>
-                    <span *ngIf="scheduled?.reason">{{scheduled?.reason}}</span>
-                    <strong *ngIf="scheduled.currency == 'SMART'">{{'Amount' | translate}}</strong>
-                    <strong *ngIf="scheduled.currency !== 'SMART'">{{'Amount in' | translate}} {{scheduled?.currency}}</strong>
-                    <span>{{scheduled?.amount | number:'1.2-8'}}</span>
-                    <strong *ngIf="scheduled?.amountSmart && scheduled?.currency !== 'SMART'">{{'Amount in SMART' | translate}}</strong>
-                    <span *ngIf="scheduled?.amountSmart && scheduled?.currency !== 'SMART'">{{scheduled?.amountSmart | number:'1.2-4'}}</span>
-                    <strong>{{'Currency' | translate}}</strong>
-                    <span>{{scheduled?.currency}}</span>
-                    <strong>{{'To Address' | translate}}</strong>
-                    <span>{{scheduled?.toAddress}}</span>
-                    <strong>{{'From Address' | translate}}</strong>
-                    <span>{{scheduled?.fromAddress}}</span>
-                    <strong>{{'Date Created' | translate}}</strong>
-                    <span>{{scheduled?.createDate | date: 'medium'}}</span>
-                    <strong>{{'Date Shipped' | translate}}</strong>
-                    <span>{{scheduled?.dateShipped | date: 'medium'}}</span>
-                    <strong>{{'Id' | translate}}</strong>
-                    <span>{{scheduled?.scheduledPaymentsID}} <i class="icon-delete" (click)="cancelScheduled(scheduled.scheduledPaymentsID)" *ngIf="scheduled?.status !== 'Canceled' && scheduled?.status !== 'Sent'"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div *ngIf="filterScheduled === 'Recurring'">
-        <div class="transactions">
-            <div *ngFor="let recurring of getRecurringList" class="card">
-                <div class="transaction-header" [ngClass]="{'notEnoughFunds': scheduled?.canBePaid === false && scheduled.status === 'Created'}">
-                    <div class="status {{recurring?.status}}">
-                        <span class="type">{{recurring?.status}}</span>
-                    </div>
-                    <div class="amount">
-                        <span *ngFor="let price of currentPrice">
-                            <strong *ngIf="recurring.currency == 'SMART'">Σ {{recurring?.amount | number:'1.2-8'}}</strong>
-                            <span *ngIf="recurring.currency == 'SMART'">($ {{recurring?.amount * price.price_usd | number:'1.2-4'}})</span>
-                            <strong *ngIf="recurring.currency !== 'SMART'">{{recurring?.currency}} {{recurring?.amount | number:'1.2-4'}}</strong>
-                            <span *ngIf="recurring.currency !== 'SMART'">(Σ {{recurring?.amountSmart | number:'1.2-8'}})</span>
-                        </span>
-                        <span>{{recurring?.label}} | {{recurring?.recurrenceType}}</span>
-                    </div>
-                    <span class="notEnoughFundsLabel" *ngIf="scheduled?.canBePaid === false && scheduled.status === 'Created'"><i class="icon icon-dollar-sign-and-piles-of-coins"></i>{{'Not enough funds' | translate}}</span>
-                    <span class="arrow" (click)="toggleViewer($event)"></span>
-                </div>
-                <div class="transaction-body">
-                    <strong>{{'Status' | translate}}</strong>
-                    <span>{{recurring?.status}}</span>
-                    <strong *ngIf="recurring?.reason">{{'Reason' | translate}}</strong>
-                    <span *ngIf="recurring?.reason">{{recurring?.reason}}</span>
-                    <strong *ngIf="recurring.currency == 'SMART'">{{'Amount' | translate}}</strong>
-                    <strong *ngIf="recurring.currency !== 'SMART'">{{'Amount in' | translate}} {{recurring?.currency}}</strong>
-                    <span>{{recurring?.amount | number:'1.2-8'}}</span>
-                    <strong *ngIf="recurring?.amountSmart && recurring?.currency !== 'SMART'">{{'Amount in SMART' | translate}}</strong>
-                    <span *ngIf="recurring?.amountSmart && recurring?.currency !== 'SMART'">{{recurring?.amountSmart | number:'1.2-4'}}</span>
-                    <strong>{{'Currency' | translate}}</strong>
-                    <span>{{recurring?.currency}}</span>
-                    <strong>{{'To Address' | translate}}</strong>
-                    <span>{{recurring?.toAddress}}</span>
-                    <strong>{{'From Address' | translate}}</strong>
-                    <span>{{recurring?.fromAddress}}</span>
-                    <strong>{{'Description' | translate}}</strong>
-                    <span>{{recurring?.label}}</span>
-                    <strong>{{'Recurrence Type' | translate}}</strong>
-                    <span>{{recurring?.recurrenceType}}</span>
-                    <strong>{{'Start Date' | translate}}</strong>
-                    <span>{{recurring?.startDate | date:'medium'}}</span>
-                    <strong>{{'End Date' | translate}}</strong>
-                    <span *ngIf="recurring?.endDate">{{recurring?.endDate | date:'medium'}}</span>
-                    <span *ngIf="!recurring?.endDate">{{'Never' | translate}}</span>
-                    <strong>{{'Date Created' | translate}}</strong>
-                    <span>{{recurring?.createDate | date:'medium'}}</span>
-                    <strong>{{'Id' | translate}}</strong>
-                    <span>{{recurring?.recurringPaymentId}} <i class="icon-delete" (click)="cancelRecurring(recurring.recurringPaymentId)"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div *ngIf="filterScheduled === 'Transactions'">
-        <div class="filter all-transactions" role="alert">
-            <button-refresh></button-refresh>
-            <button *ngFor="let filter of filters" [ngClass]="{'active': filterType === filter}" (click)="filterType = filter">
-                {{filter | translate}}
-            </button>
-        </div>
-        <div class="transactions">
-            <div class="card"
-                 *ngFor="let transaction of getTransactions()">
-                <div class="transaction-header">
-                    <div class="status"
-                         [ngClass]="{'received': transaction.direction === 'Received', 'sent': transaction.direction === 'Sent', 'awaiting': transaction.isPending}">
-                        <span class="sendType-{{transaction.orderData.typeSend}}" *ngIf="transaction.orderData">
-                            <i class="icon-envelope"></i>
-                            <span class="type"
-                                  *ngIf="transaction.orderData.status === 'Refunded'"
-                                  title="{{transaction.orderData.refundedReason}}">
-                                {{'Sent to' | translate}} {{transaction.orderData.typeSend}} {{'Refunded' | translate}}
-                            </span>
-                            <span class="type" *ngIf="transaction.orderData.status != 'Refunded'">
-                                {{'Sent to' | translate}} {{transaction.orderData.typeSend}}
-                            </span>
-                        </span>
-                        <span *ngIf="transaction.direction === 'Received' && !transaction.orderData">
-                            <i class="icon-price-min"></i>
-                            <span class="type" *ngIf="!transaction.orderData">{{'Receive' | translate}}</span>
-                        </span>
-                        <span *ngIf="transaction.direction === 'Sent' && !transaction.orderData">
-                            <i class="icon-price-max"></i>
-                            <span class="type">{{'Paid' | translate}}</span>
-                        </span>
-                        <span *ngIf="transaction.isPending && !transaction.orderData">
-                            <i class="icon-schedule"></i>
-                            <span class="type">{{'Awaiting' | translate}}</span>
-                        </span>
-                    </div>
-                    <div class="amount">
-                        <span *ngFor="let price of currentPrice">
-                            <strong>Σ {{transaction.amount | number:'1.2-8'}}</strong>
-                            ($ {{transaction.amount * price.price_usd | number:'1.2-4'}})
-                        </span>
-                        <div class="timestamp">{{ transaction.timestamp | date:'short'}}</div>
-                    </div>
-                    <span class="arrow" (click)="toggleViewer($event)"></span>
-                </div>
-                <div class="transaction-body">
-                    <span *ngIf="!transaction.orderData">
-                        <strong>{{'Transaction ID' | translate}}</strong>
-                        <a href="https://insight.smartcash.cc/tx/{{transaction.hash}}" target="_blank">{{transaction.hash}}</a>
+    <app-spinner></app-spinner>
+    <div class="transactions" *ngIf="_transactions">
+        <div class="card" *ngFor="let transaction of getTransactions();trackBy: trackByFn">
+            <div class="transaction-header">
+                <div class="status {{direction(transaction)}}" [ngClass]="{'awaiting': transaction.confirmations === 0}">
+                    <span *ngIf="direction(transaction) === 'Received' && transaction.confirmations !== 0">
+                        <i class="icon-price-min"></i>
+                        <span class="type">{{'Received' | translate}}</span>
                     </span>
-                    <span *ngIf="transaction.orderData">
-                        <strong>{{'Order ID' | translate}}</strong>
-                        <a href="https://mailsmart.smartcash.cc/order/{{transaction.orderData.orderID}}" target="_blank">{{transaction.orderData.orderID}}</a>
+                    <span *ngIf="direction(transaction) === 'Sent' && transaction.confirmations !== 0">
+                        <i class="icon-price-max"></i>
+                        <span class="type">{{'Paid' | translate}}</span>
+                    </span>
+                    <span *ngIf="transaction.confirmations === 0">
+                        <i class="icon-schedule"></i>
+                        <span class="type">{{'Awaiting' | translate}}</span>
                     </span>
                 </div>
+                <div class="amount">
+                    <span *ngFor="let price of currentPrice">
+                        <strong>Σ {{getAmount(transaction) | number:'1.2-8'}}</strong> ($ {{getAmount(transaction) * price.price_usd | number:'1.2-4'}})
+                    </span>
+                    <div class="timestamp">{{ transaction.timestamp | date:'short'}}</div>
+                </div>
+                <span class="arrow" (click)="toggleViewer($event)"></span>
+            </div>
+            <div class="transaction-body">
+                <span>
+                    <strong>{{'Transaction ID' | translate}}</strong>
+                    <a href="https://insight.smartcash.cc/tx/{{transaction.txid}}" target="_blank">{{transaction.txid}}</a>
+                </span>
             </div>
         </div>
     </div>

@@ -1,6 +1,5 @@
 import { BaseLocalStorageService } from './base-localstore.service';
 import { Observable } from 'rxjs/Rx';
-import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { TokenResponse } from '../models/response/token-response.model';
 
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
@@ -13,7 +12,6 @@ import { CurrentPrice } from '../models/data/current-price.model';
 import { Wallet } from '../models/data/walletv2.data.model';
 import { RecoveryKey } from '../models/response/key-response.model';
 import * as _ from 'lodash';
-import * as $ from 'jquery';
 import { isPlatformBrowser } from '@angular/common';
 import { saveAs } from 'file-saver';
 
@@ -200,8 +198,8 @@ export class SharedService {
 
         let h = new Headers();
         this.createAuthorizationHeader(h);
-
-        let url = `${this.baseUrl}${urlApi}`;
+        
+        let url = `${this.baseUrl}${urlApi}`;;
 
         return await
             this.http
@@ -341,12 +339,27 @@ export class SharedService {
             return Observable.of(item);
         return null!;
     }
+
     cacheIt(obj: any, url: string) {
-        
         return this._baseStorage.setItem(url, obj);
     }
+
     cacheRemove(url: string) {
-        
         return this._baseStorage.removeItem(url);
+    }
+
+    updateWalletBalance() {
+        const getBalances = async () => {
+            const wallets = this.wallet.map(wallet => wallet.address);
+            const balances = await this.post(`api/wallet/balances`, wallets);
+            
+            this.wallet.filter(wallet => {
+                const balance = balances.find((b: any) => b.address === wallet.address);
+                wallet = Object.assign(wallet, balance);
+            });
+        }
+
+        getBalances();
+        setTimeout(getBalances, 60000);
     }
 }

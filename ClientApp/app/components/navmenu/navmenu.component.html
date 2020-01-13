@@ -1,108 +1,54 @@
-<nav class="side-navbar" [ngClass]="{'showNavBar': _topmenu._showNavbar}">
+<nav class="side-navbar" [ngClass]="{'showNavBar': showNavbar}">
+    
     <span class="heading">{{'Main' | translate}}</span>
+    
     <ul class="list-unstyled">
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/overview']" class="overview">
-                <i class="icon-frequency"></i>
-                <span>{{'Overview' | translate}}</span>
-            </a>
-        </li>
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/send']">
-                <i class="icon-send"></i>
-                <span>{{'Send' | translate}}</span>
-            </a>
-        </li>
-        <!--<li [routerLinkActive]="['active']">
-            <a [routerLink]="['/scheduled-payment']">
-                <i class="icon-calendar"></i>
-                <span>{{'Scheduled Payments' | translate}}</span>
-            </a>
-        </li>-->
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/receive']">
-                <i class="icon-price-min"></i>
-                <span>{{'Receive' | translate}}</span>
-            </a>
-        </li>
-        <!-- <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/smartshift']">
-                <i class="icon-smartshift"></i>
-                <span>{{'SmartShift' | translate}}</span>
-            </a>
-        </li> -->
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/transactions']">
-                <i class="icon-compare-arrow"></i>
-                <span>{{'Transactions' | translate}}</span>
-            </a>
-        </li>
-        <!--<li [routerLinkActive]="['active']">
-            <a [routerLink]="['/cards']">
-                <i class="icon-card"></i>
-                <span>{{'SmartCard' | translate}}</span>
-            </a>
-        </li>
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/vault']">
-                <i class="icon-vault"></i>
-                <span>{{'SmartVault' | translate}}</span>
-            </a>
-        </li>
-        <li [routerLinkActive]="['active']" class="changelly">
-            <a [routerLink]="['/changelly']">
-                <i class="icon-changelly"></i>
-                <span>{{'Changelly' | translate}}</span>
-            </a>
-        </li>
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/withdraw']">
-                <i class="icon-withdraw"></i>
-                <span>{{'ATM Voucher' | translate}}</span>
-            </a>
-        </li>-->
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/contacts']">
-                <i class="icon-users"></i>
-                <span>{{'Contacts' | translate}}</span>
-            </a>
-        </li>
-        <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/settings']">
-                <i class="icon-settings"></i>
-                <span>{{'Settings' | translate}}</span>
-            </a>
-        </li>
-        <!--<li [routerLinkActive]="['active']">
-            <a [routerLink]="['/proposal']">
-                <i class="icon-thumbs-up-down"></i>
-                <span>{{'Voting' | translate}}</span>
-            </a>
-        </li>-->
+        <ng-container *ngFor="let menuItem of navMenuList; trackBy: trackByFn">
+            <li *ngIf="menuItem.enable" routerLinkActive="active">
+                <a [routerLink]="[menuItem.route]">
+                    <i class="{{ menuItem.iconClass }}"></i>
+                    <span>{{ translate(menuItem.translateKey) }}</span>
+                </a>
+            </li>
+        </ng-container>
     </ul>
+
     <span class="heading">{{'Misc.' | translate}}</span>
+
     <ul class="list-unstyled">
         <li [routerLinkActive]="['active']">
             <a [routerLink]="['/terms']">
                 <i class="icon-gavel"></i>
-                <span>{{'Policies & Legal' | translate}}</span>
+                <span>{{ 'Policies & Legal' | translate }}</span>
             </a>
         </li>
         <li>
             <a href="https://smartcash.freshdesk.com/support/solutions" target="_blank">
                 <i class="icon-email"></i>
-                <span>{{'Support' | translate}}</span>
+                <span>{{ 'Support' | translate }}</span>
             </a>
         </li>
     </ul>
-    <span class="heading">{{'Resources' | translate}}</span>
+
+    <span class="heading">{{ 'Resources' | translate }}</span>
+
     <ul class="list-unstyled">
-        <li> <a href="https://forum.smartcash.cc/" target="_blank"> <i class="fa fa-comments-o"></i>{{'Forums' | translate}}</a></li>
-        <li> <a href="https://discordapp.com/invite/BDUh8jr" target="_blank"> <i class="fa fa-slack"></i>Discord</a></li>
+        <li>
+            <a href="https://forum.smartcash.cc/" target="_blank">
+                <i class="fa fa-comments-o"></i>
+                <span>{{ 'Forums' | translate }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://discordapp.com/invite/BDUh8jr" target="_blank">
+                <i class="fa fa-slack"></i>
+                <span>Discord</span>
+            </a>
+        </li>
     </ul>
 
     <div class="bottom-info">
-        <p>{{'Sponsored by' | translate}} <a href="http://www.smartcash.cc" target="_blank" class="external">SmartCash</a></p>
-        <!-- <current-price></current-price> -->
+        <span>{{ 'Sponsored by' | translate }}</span>
+        <a href="http://www.smartcash.cc" target="_blank" class="external">SmartCash</a>
     </div>
 </nav>

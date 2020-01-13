@@ -7,27 +7,27 @@
             <div class="icon_address icon_address-{{currentWalletIndex}}">
                 <i class="icon-account-balance-wallet"></i>
             </div>
-            <span class="balance">Σ {{currentWallet.balance | number:'1.2-4'}}</span>
-            <span class="displayName">{{currentWallet.displayName}}</span>
-            <span class="address">{{currentWallet.address}}</span>
+            <span class="balance">Σ {{currentWallet?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{currentWallet?.displayName}}</span>
+            <span class="address">{{currentWallet?.address}}</span>
         </button>
     </div>
     <div class="wallets" [ngClass]="{'show animated fadeIn': showWallets}">
-        <button class="wallet" *ngFor="let w of getWallets(); let _index = index" (click)="setWallet(w)" [ngClass]="{'actived': currentWallet.address === w.address}">
+        <button class="wallet" *ngFor="let w of getWallets(); let _index = index" (click)="setWallet(w)" [ngClass]="{'actived': currentWallet?.address === w?.address}">
             <div class="icon_address icon_address-{{_index}}">
                 <i class="icon-account-balance-wallet"></i>
             </div>
-            <span class="balance">Σ {{w.balance | number:'1.2-4'}}</span>
-            <span class="displayName">{{w.displayName}}</span>
-            <span class="address">{{w.address}}</span>
+            <span class="balance">Σ {{w?.balance | number:'1.2-4'}}</span>
+            <span class="displayName">{{w?.displayName}}</span>
+            <span class="address">{{w?.address}}</span>
             <i class="icon-bullet-circle-stroke-unchecked ico_normal"></i>
             <i class="icon-adjust ico_activated"></i>
         </button>
     </div>
     <div class="page-wrapper">
-        <div class="card card-1 walletInfo" *ngIf="currentWallet.address">
+        <div class="card card-1 walletInfo" *ngIf="currentWallet?.address">
             <span class="displayName">{{'Use the address below to receive SMART.' | translate}}</span>
-            <img class="image" *ngIf="currentWallet.qrCode" src="{{getQrCodeUrl()}}" />
+            <qrcode [data]="getQrCodeUrl()"></qrcode>
             <div class="walletInfoWrapper">
                 <div>
 
@@ -52,8 +52,6 @@
                                required
                                autocomplete="off"
                                (ngModelChange)="recalculateAmountWithFee($event)"
-                               (input)="onAmountChange($event)"
-                               (keypress)="onAmountChange($event)"
                                mask='0*.00000000'
                                [dropSpecialCharacters]="false" />
                     </div>
@@ -74,6 +72,5 @@
                 </div>
             </div>
         </div>
-        <!-- <smartshift-cards class="page-changelly" *ngIf="currentWallet.position === 1 && !currentWallet.isRewards && !currentWallet.isVault"></smartshift-cards> -->
     </div>
 </div>
