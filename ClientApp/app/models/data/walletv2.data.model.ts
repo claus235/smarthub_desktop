@@ -56,6 +56,7 @@ export class Wallet {
     walletId: number;
     displayName: string;
     address: string;
+    key: string;
     qrCode: string;
     balance: number;
     totalSent: number;
@@ -91,6 +92,7 @@ export class Wallet {
         r.isScheduled = from.isScheduled!;
         r.cardId = from.cardId!;
         r.position = from.position!;
+        r.key = from.key;
         return r;
     }
 }

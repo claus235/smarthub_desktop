@@ -318,15 +318,15 @@ export class SendComponent implements OnInit {
     }
 
     async sendPaymentToday() {
-        this.response = await this._shared.post("api/Wallet/SendPayment",
-            {
-                "FromAddress": this.transaction.fromAddress,
-                "ToAddress": this.transaction.toAddress.replace(/[\s]/g, ''),
-                "Amount": this.getAmountPayment(),
-                "UserKey": this.transaction.password,
-                "code": this.transaction.code
-            }
-        );
+
+        this.response =this._wallet.sendPayment({
+            "FromAddress": this.transaction.fromAddress,
+            "ToAddress": this.transaction.toAddress.replace(/[\s]/g, ''),
+            "Amount": this.getAmountPayment(),
+            "UserKey": this.transaction.password,
+            "code": this.transaction.code
+        });
+        
     }
 
     async sendPaymentLater() {
