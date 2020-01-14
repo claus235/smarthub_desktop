@@ -185,7 +185,7 @@ export class WalletService {
     }
 
     async getUnspent(address: string) {
-        let url = `http://insight.smartcash.cc/api/addr/${address}/utxo`;
+        let url = `https://insight.smartcash.cc/api/addr/${address}/utxo`;
         try {
             return await
                 this._http
@@ -196,6 +196,28 @@ export class WalletService {
         } catch (err) {
             throw err;
         }
+
+        //TODO: Replace to SAPI and Server Call to avoid cross browser
+        //curl -X POST "http://sapi.dustinface.me/v1/address/unspent/amount" -H  "accept: */*" -H  "Content-Type: application/json" -d "{\"address\":\"SQcQL4ZmXZsgcFQoLs6qRQ2psB27BwKVdA\",\"amount\":0.1,\"random\":true,\"instantpay\":true}"
+        /*
+        {
+            "blockHeight": 1414485,
+            "scriptPubKey": "76a91424634fdb4cc2886ac971c91fe4505048d598012d88ac",
+            "address": "SQcQL4ZmXZsgcFQoLs6qRQ2psB27BwKVdA",
+            "requestedAmount": 0.1,
+            "finalAmount": 1.488,
+            "fee": 0.001,
+            "change": 1.387,
+            "utxos": [
+                {
+                "txid": "79c890cd87db58cd2d8ac156fc9dc8b2ca574e37ebf07755a8a1a8fa5d7ab1c3",
+                "index": 1,
+                "confirmations": 275,
+                "amount": 1.488
+                }
+            ]
+            }
+        */
     }
 
     async sendTransaction(hex: string) {

@@ -10,6 +10,7 @@ import { User } from "../models/user.model";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Wallet } from '../models/data/walletv2.data.model';
+import { ChangePasswordComponent } from '../components/autentication/change-password.component';
 
 @Injectable()
 export class UserService {
@@ -91,7 +92,7 @@ export class UserService {
         return await
             this._shared.http.post(this.getClientTokenCacheName, user)
                 .map<Response, TokenResponse>((res: Response) => {
-                    
+
                     return TokenResponse.map(res.json());
                 })
                 .toPromise<TokenResponse>()
@@ -107,8 +108,8 @@ export class UserService {
                     console.log(e);
                 });
     }
-    async getUser() {
-        return await this._shared.get(`api/User/Get`)
+    async getUser(user: any) {
+        return await this._shared.post(`api/User/GetInfoWithKey`, { password: user.password })
             .then(response => {
                 this._shared.dataStore.user = User.map(response.data);
                 this._shared.dataStore.wallet = Wallet.map(response.data.wallet);

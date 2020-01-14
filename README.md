@@ -62,34 +62,41 @@ WEbPack global is 3.12.0
 nvm use 6
 webpack && dotnet run
 
+Create a file in the root called appsettings.json
 
-Config Json
+#type on terminal
+touch appsettings.json
+
+copy and paste this content. Change the URLS so you can point to your own environment
 {
-    "Logging": {
-        "IncludeScopes": false,
-        "Debug": {
-            "LogLevel": {
-                "Default": "Warning"
-            }
-        },
-        "Console": {
-            "LogLevel": {
-                "Default": "Warning"
-            }
-        }
+  "Logging": {
+    "IncludeScopes": false,
+    "Debug": {
+      "LogLevel": {
+        "Default": "Warning"
+      }
     },
-    "AppSettings": {},
-    "AppApiDomain": "http://localhost:60090",
-    "AppApiDomainTest": "http://localhost:60090",
-    "SAPIDomain": "https://sapi2.smartcash.org",
-    "ExpApiDomain": "https://insight.smartcash.cc",
-    "client_id": "",
-    "client_secret": "",
-    "MailAPIDomain": "",
-    "MailAPISecret": "",
-    "ApiDomain": "",
-    "RecaptchaSecretKey":"",
-    "ApplicationInsights": {
-        "InstrumentationKey": ""
+    "Console": {
+      "LogLevel": {
+        "Default": "Warning"
+      }
     }
+  },
+  "AppSettings": {},
+  "AppApiDomain": "https://localhost",
+  "AppApiDomainTest": "https://test.localhost",
+  "SAPIDomain": "https://sapi.localhost",
+  "ExpApiDomain": "https://explorer.localhost",
+  "client_id": "",
+  "client_secret": "",
+  "MailAPIDomain": "https://localhost:8088",
+  "MailAPISecret": "",
+  "ApiDomain": "https://api.localhost",
+  "ApplicationInsights": {
+    "InstrumentationKey": ""
+  }
 }
+
+
+How to set up a linux server?
+

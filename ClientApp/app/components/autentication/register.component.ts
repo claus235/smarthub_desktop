@@ -167,7 +167,7 @@ export class RegisterComponent implements OnInit {
         
         if (this._shared.isTokenValid) {
             
-            await this._userService.getUser();
+            await this._userService.getUser(token);
             
             await this._wallet.getWallet();
             
