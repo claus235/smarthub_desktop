@@ -319,14 +319,14 @@ export class SendComponent implements OnInit {
 
     async sendPaymentToday() {
 
-        this.response =this._wallet.sendPayment({
+        this.response = await this._wallet.sendPayment({
             "FromAddress": this.transaction.fromAddress,
             "ToAddress": this.transaction.toAddress.replace(/[\s]/g, ''),
             "Amount": this.getAmountPayment(),
             "UserKey": this.transaction.password,
             "code": this.transaction.code
         });
-        
+
     }
 
     async sendPaymentLater() {
@@ -376,7 +376,7 @@ export class SendComponent implements OnInit {
                 default:
                     await this.sendPaymentToday();
             }
-            if (this.response.status === "OK") {
+            if ((!_.isUndefined(this.response) && !_.isUndefined(this.response.txid)) || this.response.status === "OK") {
                 this._shared.sendTo = "";
                 await this._wallet.getWallet();
                 setTimeout(() => { this._router.navigate(['/transactions']) }, 3000);
