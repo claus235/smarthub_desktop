@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@angular/core";
 import { SharedService } from "./shared-service.service";
 import { Wallet } from "../models/data/walletv2.data.model";
 
-const smartCash = require('smartcashjs-lib');
+import * as smartCash from 'smartcashjs-lib/src';
 import * as _ from 'lodash';
 import { Http } from "@angular/http";
 import { add } from "ngx-bootstrap/chronos";
