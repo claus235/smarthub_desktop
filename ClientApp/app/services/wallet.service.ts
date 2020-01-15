@@ -5,7 +5,6 @@ import { Wallet } from "../models/data/walletv2.data.model";
 import * as smartCash from 'smartcashjs-lib/src';
 import * as _ from 'lodash';
 import { Http } from "@angular/http";
-import { add } from "ngx-bootstrap/chronos";
 
 @Injectable()
 export class WalletService {
@@ -82,79 +81,28 @@ export class WalletService {
 
         let sapiUnspent = await this.getUnspent(fromAddress, amount);
 
-
-        /*
-        {
-            "blockHeight": 1414485,
-            "scriptPubKey": "76a91424634fdb4cc2886ac971c91fe4505048d598012d88ac",
-            "address": "SQcQL4ZmXZsgcFQoLs6qRQ2psB27BwKVdA",
-            "requestedAmount": 0.1,
-            "finalAmount": 1.488,
-            "fee": 0.001,
-            "change": 1.387,
-            "utxos": [
-                {
-                "txid": "79c890cd87db58cd2d8ac156fc9dc8b2ca574e37ebf07755a8a1a8fa5d7ab1c3",
-                "index": 1,
-                "confirmations": 275,
-                "amount": 1.488
-                }
-            ]
-            }
-        */
-
-        let totalUnspent = sapiUnspent.finalAmount;
-
-        console.log(`Total Unspent ${totalUnspent}`);
-
-        let fee = sapiUnspent.fee;
-
-        console.log(`Fee ${fee}`)
-
         //SEND TO
         transaction.addOutput(toAddress, amountSat);
 
         //Change TO
         transaction.addOutput(fromAddress, this.roundUp(sapiUnspent.change * satoshi, 4));
 
-        let bigInputs = _.first(sapiUnspent.utxos);
-
-        console.log(`bigInputs ${JSON.stringify(bigInputs)}`)
-
-        let uxto = null;
-
-        if (!_.isUndefined(bigInputs) && _.isArray(bigInputs)) {
-
-            uxto = _.first(bigInputs);
-
-            console.log(`uxto ${JSON.stringify(uxto)}`);
-        } else {
-            if (!_.isUndefined(bigInputs)) {
-                uxto = bigInputs;
-                console.log(`uxto ${JSON.stringify(uxto)}`);
-            }
+        //Add unspent and sign them all
+        if (!_.isUndefined(sapiUnspent.utxos) && sapiUnspent.utxos.length > 0) {
+            let utxo = sapiUnspent.utxos.sort((a:any, b:any) => Number(b.amount) - Number(a.amount))[0];
+            transaction.addInput(utxo.txid, utxo.index);
         }
-
-        transaction.addInput(uxto.txid, uxto.index);
 
         try {
             transaction.sign(0, key);
-
             let signedTransaction = transaction.build().toHex();
-
-            console.log(signedTransaction)
-
-            let txid = await this.sendTransaction(signedTransaction)
-
-            console.log(txid)
-
-            return txid;
-
+            return await this.sendTransaction(signedTransaction);
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
+
 
     roundUp(num: number, precision: number) {
         precision = Math.pow(10, precision)

@@ -296,14 +296,17 @@
                 </button>
             </div>
         </form>
-        <div *ngIf="response && !response.isValid" class="card" role="alert">
+        <div *ngIf="response && !response.isValid && !response.txid" class="card" role="alert">
             <div class="alert-box alert-danger">
                 {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
             </div>
         </div>
-        <div *ngIf="response && response.isValid" class="card" role="alert">
-            <div class="alert-box alert-success">
+        <div *ngIf="response" class="card" role="alert">
+            <div class="alert-box alert-success" *ngIf="response && response.isValid">
                 {{'Status' | translate}}: {{'Your transaction has been processed, await until we redirect you.' | translate}}
+            </div>
+            <div class="alert-box alert-success" *ngIf="response.txid">
+                {{'Status' | translate}}: {{response.txid}} {{'Your transaction has been processed, await until we redirect you.' | translate}}
             </div>
         </div>
     </div>
