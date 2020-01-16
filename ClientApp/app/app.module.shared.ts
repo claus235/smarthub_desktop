@@ -70,7 +70,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate';
 import { InternationalPhoneNumberModule } from './components/send/phoneNumber/phone-number.module';
-import { BsDatepickerModule } from 'ngx-bootstrap';
+import { BsDatepickerModule, ModalModule } from 'ngx-bootstrap';
 import { DynamicModule } from 'ng-dynamic-component';
 import { NgxMaskModule } from 'ngx-mask';
 
@@ -176,6 +176,7 @@ import { WalletsButtonComponent } from './components/buttons/wallets/walletsbutt
         WalletsButtonComponent
     ],
     imports: [
+        ModalModule.forRoot(),
         NgxMaskModule.forRoot(),
         DynamicModule.withComponents([]),
         BsDatepickerModule.forRoot(),

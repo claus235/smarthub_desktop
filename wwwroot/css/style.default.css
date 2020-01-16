@@ -1701,7 +1701,7 @@ input[id="password"] + button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px 0 0;
 }
 
 .page-overview .buttons > * {
@@ -1714,9 +1714,10 @@ input[id="password"] + button {
   color: #666d7b;
   transition: 0.3s;
   box-shadow: 0 1px 2px 0 rgba(53, 56, 61, 0.05);
-  width: 140px;
+  width: 190px;
   justify-content: center;
   margin: 0 5px;
+  cursor: pointer;
 }
 
 .page-overview .buttons > *:hover {
@@ -7283,4 +7284,17 @@ qrcode canvas {
 
 .clear {
   clear: both;
+}
+
+.modal-locked-address {
+  max-height: 310px;
+}
+
+.modal-locked-address h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.modal-locked-address .modal-body {
+  padding: 15px;
 }
