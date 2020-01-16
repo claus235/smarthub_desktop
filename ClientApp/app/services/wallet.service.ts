@@ -81,6 +81,7 @@ export class WalletService {
 
         let sapiUnspent = await this.getUnspent(fromAddress, amount);
 
+        transaction.setLockTime(sapiUnspent.blockHeight);
         //SEND TO
         transaction.addOutput(toAddress, amountSat);
 
@@ -89,12 +90,19 @@ export class WalletService {
 
         //Add unspent and sign them all
         if (!_.isUndefined(sapiUnspent.utxos) && sapiUnspent.utxos.length > 0) {
-            let utxo = sapiUnspent.utxos.sort((a:any, b:any) => Number(b.amount) - Number(a.amount))[0];
-            transaction.addInput(utxo.txid, utxo.index);
+
+            sapiUnspent.utxos.forEach((element: any) => {
+                transaction.addInput(element.txid, element.index);
+            });
+
+            const totalUnspent = sapiUnspent.utxos.length;
+
+            for (let i = 0; i < totalUnspent; i += 1) {
+                transaction.sign(i, key);
+            }
         }
 
         try {
-            transaction.sign(0, key);
             let signedTransaction = transaction.build().toHex();
             return await this.sendTransaction(signedTransaction);
         } catch (err) {
@@ -104,6 +112,17 @@ export class WalletService {
     }
 
 
+    round(number: number, decimals: number): number {
+
+        return Math.round(
+      
+          parseFloat(number.toString()) * Math.pow(10, decimals),
+      
+        ) / Math.pow(10, decimals);
+      
+      }
+      
+      
     roundUp(num: number, precision: number) {
         precision = Math.pow(10, precision)
         return Math.ceil(num * precision) / precision
