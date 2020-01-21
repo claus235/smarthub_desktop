@@ -5,8 +5,8 @@ import { WalletRequest } from '../../models/request/wallet-request.model';
 import { TopMenuService } from '../../services/topmenu.service';
 import { CardService } from '../../services/card.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import Swal from 'sweetalert2';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap'
 
 @Component({
     selector: 'overview',
@@ -19,7 +19,7 @@ export class OverviewComponent {
         public _topmenu: TopMenuService,
         public _card: CardService,
         private router: Router,
-        private _user: UserService
+        private modalService: BsModalService
     ) { }
 
     public walletRequest: Wallet;
@@ -29,6 +29,8 @@ export class OverviewComponent {
     private _inProgress: boolean = false;
     public address_index: number = 0;
     public notifications: any;
+    public userKey: string;
+    public modalRef: BsModalRef;
 
     get inProgress(): boolean {
         return this._inProgress;
@@ -99,4 +101,40 @@ export class OverviewComponent {
             }
         });
     }
+
+    openModal(template: any) {
+        this.modalRef = this.modalService.show(template, {class: 'modal-locked-address'});
+    }
+
+    async createLockedAddress() {
+        const body = {
+            "DisplayName": "Salary",
+            "isRewards": false,
+            "RecoveryKey": "",
+            "UserKey": this.userKey
+        };
+        await this._shared.post('api/wallet/createlockedaddress', body)
+            .then((data: any) => {
+                if (data.error && data.error.message) {
+                    Swal({
+                        type: 'error',
+                        text: data.error.message,
+                        customClass: 'animated fadeInDown',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        timer: 3000
+                    });
+                    return;
+                }
+                Swal({
+                    type: 'success',
+                    text: 'Locked wallet has created with success',
+                    customClass: 'animated fadeInDown',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    timer: 3000
+                }); 
+            });
+    }
+
 }

@@ -327,5 +327,39 @@ namespace webwallet.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpPost("[action]")]
+        public async Task<dynamic> CreateLockedAddress([FromBody] dynamic request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    throw new ArgumentNullException(nameof(request));
+                }
+                using (var httpClient = new HttpClient())
+                {
+                    StringValues auth;
+                    this.Request.Headers.TryGetValue("Authorization", out auth);
+                    var authHeader = auth.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(authHeader))
+                        authHeader = authHeader.Replace("Bearer ", "");
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth.FirstOrDefault().Replace("Bearer ", ""));
+
+                    using (var content = new StringContent(JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json"))
+                    {
+                        content.Headers.Clear();
+                        content.Headers.Add("Content-Type", "application/json");
+                        var response = await httpClient.PostAsync(this._config["AppApiDomain"] + "/api/wallet/AddNewSalaryAddress", content);
+                        dynamic token = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+                        return token;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
