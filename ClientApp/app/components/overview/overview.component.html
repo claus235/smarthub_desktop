@@ -39,12 +39,6 @@
         <span>{{'Here are your' | translate}} {{_shared.wallet.length}} {{'smartcash addresses. You can use them to receive and send smartcash' | translate}}</span>
     </div>
 
-    <div class="buttons">
-        <button (click)="openModal(template)">
-            {{ 'new-locked-address' | translate }}
-        </button>
-    </div>
-
     <ng-template #template>
         <form (ngSubmit)="createLockedAddress()" #lockedAddress="ngForm">
             <div class="modal-header">
