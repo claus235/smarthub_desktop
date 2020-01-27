@@ -10,11 +10,11 @@ import { User } from "../models/user.model";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Wallet } from '../models/data/walletv2.data.model';
-import { ChangePasswordComponent } from '../components/autentication/change-password.component';
 
 @Injectable()
 export class UserService {
     public getClientTokenCacheName = `${this.baseUrl}api/Login/GetClientToken`;
+    public getInfoWithKeyCacheName = `${this.baseUrl}api/User/GetInfoWithKey`;
     public geoIpLookup: any;
 
     constructor(
@@ -109,8 +109,18 @@ export class UserService {
                 });
     }
     async getUser(user: any) {
+        let userFromCache = await this._shared.cacheGetWithoutTime(this.getInfoWithKeyCacheName);
+        
+        if (Util.isValidObject(userFromCache)) {
+            let userFromCachePromise = await userFromCache.toPromise();
+            this._shared.dataStore.user = User.map(userFromCachePromise);
+            this._shared.dataStore.wallet = Wallet.map(userFromCachePromise.wallet);
+            return this._shared.dataStore.user;
+        }
+
         return await this._shared.post(`api/User/GetInfoWithKey`, { password: user.password })
             .then(response => {
+                this._shared.cacheIt(response.data, this.getInfoWithKeyCacheName);
                 this._shared.dataStore.user = User.map(response.data);
                 this._shared.dataStore.wallet = Wallet.map(response.data.wallet);
                 return this._shared.dataStore.user;

@@ -263,6 +263,7 @@ export class SharedService {
     }
 
     public logout() {
+        this.cacheRemove(`${this.baseUrl}api/User/GetInfoWithKey`);
         this.cacheRemove(`${this.baseUrl}api/Login/GetClientToken`);
         this.dataStore = {
             wallet: [],
