@@ -25,7 +25,6 @@ export class ContactComponent implements OnInit {
     public openForm: boolean = false;
     public _ = _;
     public _toggleContact: number = -1;
-    public defaultCountry: string = 'ax';
     public _env = environment;
 
     //Request
@@ -194,7 +193,6 @@ export class ContactComponent implements OnInit {
     private timer: any;
     ngOnInit(): void {
         this.getContacts();
-        this.defaultCountry = this._user.geoIpLookup.country_code ? this._user.geoIpLookup.country_code.toLowerCase() : 'ax';
 
         // Hide qr on lame browsers
         let browser = this._device.getDeviceInfo().browser;
@@ -207,7 +205,6 @@ export class ContactComponent implements OnInit {
             let fieldValue = $("#address").val();
             if (Util.isValidAndNotEmpty(fieldValue) && this.contactRequest.address !== fieldValue) {
                 this.contactRequest.address = fieldValue!.toString();
-                console.log(this.contactRequest.address);
             }
         }, 500);
     }

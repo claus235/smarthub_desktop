@@ -39,6 +39,32 @@
         <span>{{'Here are your' | translate}} {{_shared.wallet.length}} {{'smartcash addresses. You can use them to receive and send smartcash' | translate}}</span>
     </div>
 
+    <div class="buttons">
+        <button (click)="openModal(template)">
+            {{ 'new-locked-address' | translate }}
+        </button>
+    </div>
+
+    <ng-template #template>
+        <form (ngSubmit)="createLockedAddress()" #lockedAddress="ngForm">
+            <div class="modal-header">
+                <h2>{{ 'new-locked-address' | translate }}</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-input">
+                    <label for="password">{{'Password' | translate}}:</label>
+                    <input id="password" name="password" type="password" [(ngModel)]="userKey" required #password="ngModel" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-bottom">
+                    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">{{'Cancel' | translate}}</button>
+                    <button type="submit" class="btn btn-primary">{{'Create' | translate}}</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
     <div class="card-address-wrap">
         <div class="card-address" *ngFor="let w of getWallets(); let _index = index">
 
