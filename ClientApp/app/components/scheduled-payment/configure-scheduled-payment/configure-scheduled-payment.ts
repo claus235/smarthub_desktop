@@ -39,7 +39,7 @@ export class ConfigureScheduledPayment {
                     text: 'Your Scheduled Payment Wallet has been configured',
                 }, swaloptions);
                 Swal(swalSuccess).then(async (result: any) => {
-                    await this._user.getUser();
+                    await this._user.getUser({ password: "" });
                 });
             });
     }

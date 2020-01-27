@@ -1701,7 +1701,7 @@ input[id="password"] + button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px 0 0;
 }
 
 .page-overview .buttons > * {
@@ -7297,4 +7297,4 @@ qrcode canvas {
 
 .modal-locked-address .modal-body {
   padding: 15px;
-} 
+}

@@ -103,8 +103,10 @@ export class LoginComponent implements OnInit {
     }
 
     async autoLogin() {
+
+        //TODO: Get from local DB
         this.inProgress = true;
-        await this._user.getUser();
+        await this._user.getUser(this.userInfo);
         await this._shared.updateWalletBalance();
         if (!Util.isValidObject(this._shared.user)) {
             this._shared.logout();

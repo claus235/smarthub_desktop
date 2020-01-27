@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
         try {
             this.userInfo.termsVersion = this._shared.recoveryKey.termsVersion;
             this.createResponse = await this._userService.updateUser(this.userInfo);
-            await this._userService.getUser();
+            await this._userService.getUser(this.userInfo);
 
             setTimeout(() => {
                 if (!this.createResponse.isValid) {
