@@ -24,6 +24,18 @@ export const NavMenuList = [
         enable: true
     },
     {
+        route: '/withdraw',
+        iconClass: 'icon-withdraw',
+        translateKey: 'Withdraw',
+        enable: true
+    },
+    {
+        route: '/vault',
+        iconClass: 'icon-vault',
+        translateKey: 'Vault',
+        enable: true
+    },
+    {
         route: '/contacts',
         iconClass: 'icon-users',
         translateKey: 'Contacts',
