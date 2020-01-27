@@ -115,6 +115,8 @@ export class OverviewComponent {
         };
         await this._shared.post('api/wallet/createlockedaddress', body)
             .then((data: any) => {
+                this.modalRef.hide();
+               
                 if (data.error && data.error.message) {
                     Swal({
                         type: 'error',
@@ -122,16 +124,19 @@ export class OverviewComponent {
                         customClass: 'animated fadeInDown',
                         showConfirmButton: false,
                         allowOutsideClick: false,
+                        heightAuto: false,
                         timer: 3000
                     });
                     return;
                 }
+                
                 Swal({
                     type: 'success',
                     text: 'Locked wallet has created with success',
                     customClass: 'animated fadeInDown',
                     showConfirmButton: false,
                     allowOutsideClick: false,
+                    heightAuto: false,
                     timer: 3000
                 }); 
             });
