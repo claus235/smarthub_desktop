@@ -6835,8 +6835,9 @@ withdraw .box-card .fiatAmount {
   }
 
   .page-login .modal.absolute-center {
-    bottom: inherit !important;
-    top: 50px !important;
+    bottom: unset !important;
+    top: unset !important;
+    margin-top: 100px;
   }
 
   .page-login .modal,
