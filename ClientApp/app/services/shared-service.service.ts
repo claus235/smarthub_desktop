@@ -2,7 +2,7 @@ import { BaseLocalStorageService } from './base-localstore.service';
 import { Observable } from 'rxjs/Rx';
 import { TokenResponse } from '../models/response/token-response.model';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@angular/http';
+import { Http, Headers, ResponseContentType } from '@angular/http';
 import { Util } from '../models/util';
 import { User } from '../models/user.model';
 import { CurrentPrice } from '../models/data/current-price.model';
