@@ -10,6 +10,7 @@ import { User } from "../models/user.model";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Wallet } from '../models/data/walletv2.data.model';
+import { SpinnerService } from './spinner.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     public geoIpLookup: any;
 
     constructor(
+        public spinnerService: SpinnerService,
         protected _shared: SharedService,
         @Inject('BASE_URL') public baseUrl: string,
         protected _http: Http,
@@ -26,10 +28,12 @@ export class UserService {
     }
 
     async getNewkey() {
+        this.spinnerService.showSpinner();
         return await this._shared.http.get(`${this.baseUrl}api/User/GetNewKey`)
             .map((response: Response) => { return response.json(); })
             .toPromise()
             .then(response => {
+                this.spinnerService.hideSpinner();
                 this._shared.dataStore.recoveryKey = RecoveryKey.map(response.data);
                 return this._shared.dataStore.recoveryKey;
             }).catch(function (e) {

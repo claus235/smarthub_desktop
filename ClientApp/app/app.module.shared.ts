@@ -10,7 +10,7 @@ import { SharedService } from './services/shared-service.service';
 
 //PAGES
 import { LogoutComponent } from './components/autentication/logout.component';
-import { RegisterComponent } from './components/autentication/register.component';
+import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './components/autentication/profile.component';
 import { DisableTwoFaRecoveryComponent } from './components/autentication/disabletwofa.recovery.component';
 import { AppComponent } from './components/app/app.component';

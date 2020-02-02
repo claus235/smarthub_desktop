@@ -1,0 +1,29 @@
+.modal-body {
+    min-height: 300px;
+}
+
+.body__title {
+    text-align: center;
+}
+
+.body__subtitle {
+    text-align: center;
+}
+
+.generator__button {
+    padding: 15px 20px;
+    display: flex;
+    margin: 20px auto 0;
+    background: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    color: #8d8d8e;
+    border: 1px dashed #f2b710;
+    border-radius: 4px;
+}
+
+.generator__button:hover,
+.generator__button:focus {
+    background: #f2b71008;
+}
