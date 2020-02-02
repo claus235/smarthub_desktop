@@ -1,4 +1,4 @@
-declare module 'smartcashjs-lib' {
+declare module 'smartcashjs-lib/src' {
   namespace bufferutils {
     function pushDataSize(i: any): 1 | 2 | 3 | 5;
     function readPushDataInt(buffer: any, offset: any): {
@@ -275,3 +275,5 @@ declare module 'smartcashjs-lib' {
     }
   }
 }
+
+declare module 'aes256';

@@ -4,13 +4,12 @@ import { Wallet } from "../models/data/walletv2.data.model";
 
 import * as smartCash from 'smartcashjs-lib/src';
 import * as _ from 'lodash';
-import { Http } from "@angular/http";
+import * as aes256 from 'aes256';
 
 @Injectable()
 export class WalletService {
 
     constructor(
-        private _http: Http,
         protected _shared: SharedService,
         @Inject('BASE_URL') public baseUrl: string
     ) {
@@ -25,7 +24,7 @@ export class WalletService {
         if (_.isUndefined(wallet) || _.isNull(wallet) || _.isEmpty(wallet))
             throw Error("You need a private key in order to send it");
         else {
-            privateKey = wallet.key;
+            privateKey = aes256.decrypt(transaction.UserKey, wallet.key);
         }
 
         if (_.isEmpty(privateKey))

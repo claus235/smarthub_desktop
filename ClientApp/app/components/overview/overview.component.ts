@@ -6,7 +6,7 @@ import { TopMenuService } from '../../services/topmenu.service';
 import { CardService } from '../../services/card.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap'
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 
 @Component({
     selector: 'overview',
@@ -114,13 +114,13 @@ export class OverviewComponent {
             "UserKey": this.userKey
         };
         await this._shared.post('api/wallet/createlockedaddress', body)
-            .then((data: any) => {
+            .then( async(response: any) => {
+                this._shared.updateGetInfo(response, this.userKey);
                 this.modalRef.hide();
-               
-                if (data.error && data.error.message) {
+                if (response.error && response.error.message) {
                     Swal({
                         type: 'error',
-                        text: data.error.message,
+                        text: response.error.message,
                         customClass: 'animated fadeInDown',
                         showConfirmButton: false,
                         allowOutsideClick: false,
@@ -129,7 +129,6 @@ export class OverviewComponent {
                     });
                     return;
                 }
-                
                 Swal({
                     type: 'success',
                     text: 'Locked wallet has created with success',
