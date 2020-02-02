@@ -4,7 +4,7 @@
     </span>
     <h2 class="cardTitle">{{'Deposit' | translate}}</h2>
     <p class="cardSubTitle">{{'Use the address below to deposit SMART into your Scheduled Payment Wallet.' | translate}}</p>
-    <img class="qrcode-img" src="https://qr.smartcash.cc/?address={{wallet?.address}}" alt="QR Code">
+    <qrcode class="qrCode" [data]="wallet?.address"></qrcode>
     <div class="walletInfoWrapper">
         <span class="address">{{wallet?.address}}</span>
         <button class="btn copy" type="button" [attr.data-clipboard-text]="wallet?.address">

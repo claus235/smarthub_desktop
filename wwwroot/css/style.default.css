@@ -5820,6 +5820,11 @@ nav-bottom .nav-bottom li.active i {
   background-color: #d49d14;
 }
 
+.page-vault .qrCode canvas {
+  margin: 10px auto;
+  display: flex;
+}
+
 .page-vault-withdraw .buttons {
   display: flex;
   flex-wrap: wrap;
