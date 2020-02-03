@@ -275,3 +275,5 @@ declare module 'smartcashjs-lib/src' {
     }
   }
 }
+
+declare module 'aes256';

@@ -1,11 +1,8 @@
 import { BaseLocalStorageService } from './base-localstore.service';
 import { Observable } from 'rxjs/Rx';
 import { TokenResponse } from '../models/response/token-response.model';
-
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@angular/http';
-
-
+import { Http, Headers, ResponseContentType } from '@angular/http';
 import { Util } from '../models/util';
 import { User } from '../models/user.model';
 import { CurrentPrice } from '../models/data/current-price.model';
@@ -14,6 +11,7 @@ import { RecoveryKey } from '../models/response/key-response.model';
 import * as _ from 'lodash';
 import { isPlatformBrowser } from '@angular/common';
 import { saveAs } from 'file-saver';
+import * as aes256 from 'aes256';
 
 @Injectable()
 export class SharedService {
@@ -362,5 +360,19 @@ export class SharedService {
 
         getBalances();
         setTimeout(getBalances, 60000);
+    }
+
+    updateGetInfo(response: any, secretKey: string) {
+        const getInfoWithKeyCacheName = `${this.baseUrl}api/User/GetInfoWithKey`;
+        response.data.wallet.forEach((wallet: any) => {
+            if (wallet && wallet.key) {
+                wallet.key = aes256.encrypt(secretKey, wallet.key);
+            }
+        });
+        this.cacheIt(response.data, getInfoWithKeyCacheName);
+        this.cacheIt(response.data, getInfoWithKeyCacheName);
+        this.dataStore.user = User.map(response.data);
+        this.dataStore.wallet = Wallet.map(response.data.wallet);
+        this.updateWalletBalance();
     }
 }

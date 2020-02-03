@@ -124,9 +124,7 @@ export class UserService {
 
         return await this._shared.post(`api/User/GetInfoWithKey`, { password: user.password })
             .then(response => {
-                this._shared.cacheIt(response.data, this.getInfoWithKeyCacheName);
-                this._shared.dataStore.user = User.map(response.data);
-                this._shared.dataStore.wallet = Wallet.map(response.data.wallet);
+                this._shared.updateGetInfo(response, user.password);
                 return this._shared.dataStore.user;
             }).catch(function (e) {
                 console.log(e);

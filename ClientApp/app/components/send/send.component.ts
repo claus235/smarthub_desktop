@@ -318,7 +318,6 @@ export class SendComponent implements OnInit {
     }
 
     async sendPaymentToday() {
-
         this.response = await this._wallet.sendPayment({
             "FromAddress": this.transaction.fromAddress,
             "ToAddress": this.transaction.toAddress.replace(/[\s]/g, ''),
@@ -376,9 +375,12 @@ export class SendComponent implements OnInit {
                 default:
                     await this.sendPaymentToday();
             }
-            if ((!_.isUndefined(this.response) && !_.isUndefined(this.response.txid)) || this.response.status === "OK") {
+            if (!_.isUndefined(this.response) && !_.isUndefined(this.response.txid)) {
+                if (this.response && !this.response.status) {
+                    this.response.status === "OK"
+                }
                 this._shared.sendTo = "";
-                await this._wallet.getWallet();
+                this._shared.updateWalletBalance();
                 setTimeout(() => { this._router.navigate(['/transactions']) }, 3000);
             }
             try {
