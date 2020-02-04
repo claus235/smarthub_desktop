@@ -1,12 +1,7 @@
 <div class="page-register">
     <img class="mobile-logo" src="/img/weblogo.png" alt="logo smartcash">
     <div class="modal absolute-center">
-        <div class="login-disclaimer">
-            <!--<div class="wrapper-text">-->
-            <!--<p class="text"><strong>{{'Eos et accusamus' | translate}}</strong> {{'et iusto odio dignissimos ducimus qui blan' | translate}}</p>-->
-            <!--<img src="/img/weblogo.png" alt="logo smartcash">-->
-            <!--</div>-->
-        </div>
+        <div class="login-disclaimer"></div>
         <div class="login-form">
             <div class="login-form-menu">
                 <a [routerLink]="['/login']" routerLinkActive="active">
@@ -21,36 +16,44 @@
 
             <form (ngSubmit)="securityCodeConfirm()" *ngIf="!inProgress">
                 <div class="modal-body">
-                    <div class="alert-box alert-danger" role="alert">
-                        <p style="font-weight:400">{{'For security reasons, we strongly recommend you save this Master Security Code file to a secure external storage device, instead of your computer hard drive.' | translate}}</p>
-                        <p style="font-weight:400">{{'The Master Security Code is required to access your private keys.' | translate}}</p>
+                    <h2 class="body__title">Master Security Code</h2>
+                    <p class="body__subtitle">
+                        {{'The Master Security Code is required to access your private keys and features of web wallet, once lost it cannot be recovered, keep it safe.' | translate}}
+                    </p>
+                    <ng-container *ngIf="!_shared.recoveryKey.recoveryKey">
+                        <button type="button" (click)="generateMSK()" class="generator__button">
+                            Generate my Master Security Code
+                        </button>
+                        <app-spinner></app-spinner>
+                    </ng-container>
+                    <ng-container *ngIf="_shared.recoveryKey.recoveryKey"> 
                         <div class="secutiry-code">
                             <div class="wrapper">
                                 <span class="title">
                                     {{'This is your Master Security Code' | translate}}
-                                    <!-- <span class="btn copy1" [attr.data-clipboard-text]="_shared.recoveryKey.recoveryKey">({{'click here to copy' | translate}})</span> -->
                                 </span>
                                 <p class="recoveryKey" oncut="return false" onpaste="return false">{{ _shared.recoveryKey.recoveryKey }}</p>
+                                <p>{{'For security reasons, we strongly recommend you save this Master Security Code file to a secure external storage device, instead of your computer hard drive.' | translate}}</p>
                             </div>
-                            <!-- <button type="button" class="btn copy2" [attr.data-clipboard-text]="_shared.recoveryKey.recoveryKey">
+                            <button type="button" class="btn copy2" [attr.data-clipboard-text]="_shared.recoveryKey.recoveryKey">
                                 <i class="icon-content-copy"></i>
-                            </button> -->
+                            </button>
                         </div>
-                    </div>
-                    <div class="form-input form-input-key_comfirmation">
-                        <label>
-                            {{'Enter your Master Security Code below to confirm you have saved it' | translate}} <span class="required">*</span>
-                            <span [hidden]="key_confirmation.valid || key_confirmation.pristine"
-                                  class="alert alert-danger">{{'The Master Security Code Confirmation is required' | translate}}</span>
-                            <span [hidden]="isRecoveryKeyEqual"
-                                  class="alert alert-danger">{{'The recoveryKey does not match.' | translate}}</span>
-                        </label>
-                        <input type="text" value="" [(ngModel)]="userInfoExtended.key_confirmation" name="key_confirmation" required #key_confirmation="ngModel"
-                               (change)="confirmKey()" placeholder="{{'Paste your Master Security Code here to confirm' | translate}}" />
-                    </div>
+                        <div class="form-input form-input-key_comfirmation">
+                            <label>
+                                {{'Enter your Master Security Code below to confirm you have saved it' | translate}} <span class="required">*</span>
+                                <span [hidden]="key_confirmation.valid || key_confirmation.pristine"
+                                    class="alert alert-danger">{{'The Master Security Code Confirmation is required' | translate}}</span>
+                                <span [hidden]="isRecoveryKeyEqual"
+                                    class="alert alert-danger">{{'The recoveryKey does not match.' | translate}}</span>
+                            </label>
+                            <input type="text" value="" [(ngModel)]="userInfoExtended.key_confirmation" name="key_confirmation" required #key_confirmation="ngModel"
+                                (change)="confirmKey()" placeholder="{{'Paste your Master Security Code here to confirm' | translate}}" />
+                        </div>
+                    </ng-container>
                 </div>
                 <div class="modal-footer reverse">
-                    <button class="btn btn-primary" *ngIf="codeConfirmKey" type="submit">{{"Confirm" | translate}}</button>
+                    <button class="btn btn-primary" [disabled]="!codeConfirmKey" type="submit">{{"Next" | translate}}</button>
                 </div>
             </form>
             <form (ngSubmit)="onSubmit()" #registerForm="ngForm" autocomplete="off" *ngIf="inProgress">
@@ -119,6 +122,20 @@
                         <input [type]="inputTypePassword" value="" [(ngModel)]="userInfoExtended.password_confirmation" name="password_confirmation"
                                required #password_confirmation="ngModel" (change)="confirmPassword()" autocomplete="off" />
                     </div>
+
+                    <div class="secutiry-code">
+                        <div class="wrapper">
+                            <span class="title">
+                                {{'This is your Master Security Code' | translate}}
+                            </span>
+                            <p class="recoveryKey" oncut="return false" onpaste="return false">{{ _shared.recoveryKey.recoveryKey }}</p>
+                            <p>{{'For security reasons, we strongly recommend you save this Master Security Code file to a secure external storage device, instead of your computer hard drive.' | translate}}</p>
+                        </div>
+                        <button type="button" class="btn copy2" [attr.data-clipboard-text]="_shared.recoveryKey.recoveryKey">
+                            <i class="icon-content-copy"></i>
+                        </button>
+                    </div>
+
                     <div *ngIf="!errorMessage && errorMessage.length > 0" class="alert alert-danger" role="alert">
                         <strong>{{'Error' | translate}}: </strong> {{ errorMessage }}
                     </div>

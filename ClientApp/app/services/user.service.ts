@@ -10,13 +10,16 @@ import { User } from "../models/user.model";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Wallet } from '../models/data/walletv2.data.model';
+import { SpinnerService } from './spinner.service';
 
 @Injectable()
 export class UserService {
     public getClientTokenCacheName = `${this.baseUrl}api/Login/GetClientToken`;
+    public getInfoWithKeyCacheName = `${this.baseUrl}api/User/GetInfoWithKey`;
     public geoIpLookup: any;
 
     constructor(
+        public spinnerService: SpinnerService,
         protected _shared: SharedService,
         @Inject('BASE_URL') public baseUrl: string,
         protected _http: Http,
@@ -25,10 +28,12 @@ export class UserService {
     }
 
     async getNewkey() {
+        this.spinnerService.showSpinner();
         return await this._shared.http.get(`${this.baseUrl}api/User/GetNewKey`)
             .map((response: Response) => { return response.json(); })
             .toPromise()
             .then(response => {
+                this.spinnerService.hideSpinner();
                 this._shared.dataStore.recoveryKey = RecoveryKey.map(response.data);
                 return this._shared.dataStore.recoveryKey;
             }).catch(function (e) {
@@ -91,7 +96,7 @@ export class UserService {
         return await
             this._shared.http.post(this.getClientTokenCacheName, user)
                 .map<Response, TokenResponse>((res: Response) => {
-                    
+
                     return TokenResponse.map(res.json());
                 })
                 .toPromise<TokenResponse>()
@@ -107,11 +112,19 @@ export class UserService {
                     console.log(e);
                 });
     }
-    async getUser() {
-        return await this._shared.get(`api/User/Get`)
+    async getUser(user: any) {
+        let userFromCache = await this._shared.cacheGetWithoutTime(this.getInfoWithKeyCacheName);
+        
+        if (Util.isValidObject(userFromCache)) {
+            let userFromCachePromise = await userFromCache.toPromise();
+            this._shared.dataStore.user = User.map(userFromCachePromise);
+            this._shared.dataStore.wallet = Wallet.map(userFromCachePromise.wallet);
+            return this._shared.dataStore.user;
+        }
+
+        return await this._shared.post(`api/User/GetInfoWithKey`, { password: user.password })
             .then(response => {
-                this._shared.dataStore.user = User.map(response.data);
-                this._shared.dataStore.wallet = Wallet.map(response.data.wallet);
+                this._shared.updateGetInfo(response, user.password);
                 return this._shared.dataStore.user;
             }).catch(function (e) {
                 console.log(e);

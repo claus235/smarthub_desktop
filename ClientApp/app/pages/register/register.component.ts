@@ -3,7 +3,6 @@ import { Util } from '../../models/util';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
-import { RecoveryKey } from '../../models/response/key-response.model';
 import { SharedService } from '../../services/shared-service.service';
 import { WalletService } from '../../services/wallet.service';
 import { TokenRequest } from '../../models/request/token-request.model';
@@ -11,9 +10,11 @@ import * as jQuery from 'jquery';
 import { DeviceDetectorService } from '../../modules/ngx-device-detector/device-detector.service';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../app.environment';
+import { SpinnerService } from '../../services/spinner.service';
 
 @Component({
     selector: 'register',
+    styleUrls: ['./register.component.css'],
     templateUrl: './register.component.html'
 })
 
@@ -87,6 +88,7 @@ export class RegisterComponent implements OnInit {
     public userInfoExtended = { "password_confirmation": "", "key_confirmation": "" };
 
     constructor(
+        public _spinner: SpinnerService,
         public _userService: UserService,
         private _router: Router,
         public _shared: SharedService,
@@ -112,12 +114,12 @@ export class RegisterComponent implements OnInit {
         }
     }
 
-    async ngOnInit() {
-        await this._userService.getNewkey();
+    ngOnInit() {
         this.inProgress = false;
-        jQuery(document).bind("contextmenu cut copy",function(e){
-            e.preventDefault();
-        });
+    }
+
+    generateMSK() {
+        this._userService.getNewkey();
     }
 
     public confirmPassword() {
@@ -167,7 +169,7 @@ export class RegisterComponent implements OnInit {
         
         if (this._shared.isTokenValid) {
             
-            await this._userService.getUser();
+            await this._userService.getUser(token);
             
             await this._wallet.getWallet();
             

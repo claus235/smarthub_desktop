@@ -194,13 +194,13 @@
         </span>
         <h2 class="cardTitle">{{'Deposit' | translate}}</h2>
         <p class="cardSubTitle">{{'Use the address below to deposit SMART in your Vault.' | translate}}</p>
+        <qrcode class="qrCode" [data]="vaultData?.walletAddress"></qrcode>
         <div class="walletInfoWrapper">
             <span class="address">{{vaultData?.walletAddress}}</span>
             <button class="btn copy" type="button" [attr.data-clipboard-text]="vaultData?.walletAddress">
                 <i class=" icon-content-copy"></i>
             </button>
         </div>
-        <img class="qrcode-img" src="https://qr.smartcash.cc/?address={{vaultData?.walletAddress}}" alt="QR Code">
     </div>
 
     <div class="modal animated fadeIn " id="modalQrCode" role="dialog" style="display:none">

@@ -34,6 +34,19 @@
                 <span *ngIf="i == 2 || i == 1">(beta)</span>
             </button>
         </div>
+        <div *ngIf="response && !response.isValid && !response.txid" class="card" role="alert">
+            <div class="alert-box alert-danger">
+                {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
+            </div>
+        </div>
+        <div *ngIf="response" class="card" role="alert">
+            <div class="alert-box alert-success" *ngIf="response && response.isValid">
+                {{'Status' | translate}}: {{'Your transaction has been processed, await until we redirect you.' | translate}}
+            </div>
+            <div class="alert-box alert-success" *ngIf="response.txid">
+                {{'Status' | translate}}: {{response.txid}} {{'Your transaction has been processed, await until we redirect you.' | translate}}
+            </div>
+        </div>
         <form (ngSubmit)="sendPayment()" #sendForm="ngForm" *ngIf="!inProgress && typeSend == 'ADDRESS' && (!response || response.status !== 'OK')" autocomplete="off">
             <div class="card card-1 address">
                 <span class="cardNumber">1</span>
@@ -296,16 +309,6 @@
                 </button>
             </div>
         </form>
-        <div *ngIf="response && !response.isValid" class="card" role="alert">
-            <div class="alert-box alert-danger">
-                {{'Error' | translate}}: <span [innerHtml]="response?.error?.message"></span>
-            </div>
-        </div>
-        <div *ngIf="response && response.isValid" class="card" role="alert">
-            <div class="alert-box alert-success">
-                {{'Status' | translate}}: {{'Your transaction has been processed, await until we redirect you.' | translate}}
-            </div>
-        </div>
     </div>
     <div class="modal animated fadeIn " id="modalQrCode" role="dialog" style="display:none">
         <div class="modal-dialog">

@@ -6,7 +6,7 @@ import { TopMenuService } from '../../services/topmenu.service';
 import { CardService } from '../../services/card.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap'
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 
 @Component({
     selector: 'overview',
@@ -114,14 +114,17 @@ export class OverviewComponent {
             "UserKey": this.userKey
         };
         await this._shared.post('api/wallet/createlockedaddress', body)
-            .then((data: any) => {
-                if (data.error && data.error.message) {
+            .then( async(response: any) => {
+                this._shared.updateGetInfo(response, this.userKey);
+                this.modalRef.hide();
+                if (response.error && response.error.message) {
                     Swal({
                         type: 'error',
-                        text: data.error.message,
+                        text: response.error.message,
                         customClass: 'animated fadeInDown',
                         showConfirmButton: false,
                         allowOutsideClick: false,
+                        heightAuto: false,
                         timer: 3000
                     });
                     return;
@@ -132,6 +135,7 @@ export class OverviewComponent {
                     customClass: 'animated fadeInDown',
                     showConfirmButton: false,
                     allowOutsideClick: false,
+                    heightAuto: false,
                     timer: 3000
                 }); 
             });
