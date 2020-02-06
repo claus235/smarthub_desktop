@@ -65,7 +65,6 @@ export class WalletService {
 
 
     //SAPI
-
     async createAndSendRawTransaction(toAddress: string, amount: number, keyString: string) {
 
         let satoshi = 100000000;
@@ -80,12 +79,40 @@ export class WalletService {
 
         let sapiUnspent = await this.getUnspent(fromAddress, amount);
 
+        console.log(`sapiUnspent`)
+
+        console.log(sapiUnspent)
+
+        let totalUnspent = _.sumBy(sapiUnspent.utxos, 'amount');
+
+        console.log(`Total Unspent ${totalUnspent}`)
+
+        let fee = this.calculateFee(sapiUnspent.utxos);
+
+        console.log(`Fee ${fee}`)
+
+        let change = (totalUnspent - amount - fee);
+
+        if (totalUnspent < (amount + fee))
+            throw new Error("The amount exceeds your balance!");
+
+        if (amount < 0.001)
+            throw new Error("The amount is smaller than the minimum accepted. Minimum amount: 0.001.");
+
         transaction.setLockTime(sapiUnspent.blockHeight);
+
         //SEND TO
         transaction.addOutput(toAddress, amountSat);
 
-        //Change TO
-        transaction.addOutput(fromAddress, this.roundUp(sapiUnspent.change * satoshi, 4));
+        if (change >= fee)
+        {
+             //Change TO
+             transaction.addOutput(fromAddress, this.roundUp(change * satoshi, 8));
+        }
+        else
+        {
+            fee = change;
+        }
 
         //Add unspent and sign them all
         if (!_.isUndefined(sapiUnspent.utxos) && sapiUnspent.utxos.length > 0) {
@@ -94,9 +121,7 @@ export class WalletService {
                 transaction.addInput(element.txid, element.index);
             });
 
-            const totalUnspent = sapiUnspent.utxos.length;
-
-            for (let i = 0; i < totalUnspent; i += 1) {
+            for (let i = 0; i < sapiUnspent.utxos.length; i += 1) {
                 transaction.sign(i, key);
             }
         }
@@ -110,18 +135,34 @@ export class WalletService {
         }
     }
 
+    calculateFee(listUnspent: string | any[]) {
+
+        let fee = 0.002;
+
+        let countUnspent = listUnspent.length;
+
+        var newFee = (((countUnspent * 148) + (2 * 34) + 10 + 9) / 1024) * fee;
+
+        newFee = (0.00003 + (((countUnspent * 148) + (2 * 34) + 10 + 9) / 1024)) * fee;
+
+        if (newFee > fee)
+            fee = newFee;
+
+        return this.roundUp(fee, 4);
+    }
+
 
     round(number: number, decimals: number): number {
 
         return Math.round(
-      
-          parseFloat(number.toString()) * Math.pow(10, decimals),
-      
+
+            parseFloat(number.toString()) * Math.pow(10, decimals),
+
         ) / Math.pow(10, decimals);
-      
-      }
-      
-      
+
+    }
+
+
     roundUp(num: number, precision: number) {
         precision = Math.pow(10, precision)
         return Math.ceil(num * precision) / precision

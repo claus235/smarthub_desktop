@@ -230,8 +230,9 @@ export class SendComponent implements OnInit {
     }
 
     async getFee() {
+        this.transactionExtended.fee = 0.002;
         let fee = await this._wallet.getPaymentFee(this.transaction);
-        if (Util.isValidObject(fee))
+        if (Util.isValidObject(fee) && fee.data > 0.002)
             this.transactionExtended.fee = fee.data;
         if (this.typeSend !== 'ADDRESS')
             this.transactionExtended.fee = fee.data + 0.001;
