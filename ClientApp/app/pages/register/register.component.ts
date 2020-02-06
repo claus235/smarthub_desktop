@@ -28,7 +28,6 @@ export class RegisterComponent implements OnInit {
     public createResponse: any;
     public showInfoPanel: boolean = false;
     public export: any;
-    public exportHtml: string;
     public showTerms: boolean = false;
     public formModel = { captcha: undefined };
     public isNative = false;
@@ -176,14 +175,9 @@ export class RegisterComponent implements OnInit {
             await this.setIsAuthenticated();
 
             
-            let exportResponse = await this._wallet.exportWallet({ "data": this._shared.recoveryKey.recoveryKey });
+            let exportResponse = await this._wallet.exportWallet({ "data": this._shared.recoveryKey.recoveryKey, "userkey": token.password });
             if (Util.isValidObject(exportResponse) && exportResponse.isValid) {
-                this.export = await this._shared.exportPrivateKeys(exportResponse, token.username);
-                this.exportHtml = this.export.toString();
-
-                while (Util.isValidAndNotEmpty(this.exportHtml) && this.exportHtml.indexOf('\n') > -1) {
-                    this.exportHtml = this.exportHtml.replace("\n", "<br />");
-                }
+                await this._shared.exportPrivateKeys(exportResponse, token.username, this._shared.recoveryKey.recoveryKey);
             }
 
             let redirect = confirm("Did you save your Master Security Code and your Private Key? Can we redirect you?");
