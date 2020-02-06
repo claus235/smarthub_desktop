@@ -48,7 +48,7 @@
                                     class="alert alert-danger">{{'The recoveryKey does not match.' | translate}}</span>
                             </label>
                             <input type="text" value="" [(ngModel)]="userInfoExtended.key_confirmation" name="key_confirmation" required #key_confirmation="ngModel"
-                                (change)="confirmKey()" placeholder="{{'Paste your Master Security Code here to confirm' | translate}}" />
+                                (ngModelChange)="confirmKey()" placeholder="{{'Paste your Master Security Code here to confirm' | translate}}" />
                         </div>
                     </ng-container>
                 </div>
