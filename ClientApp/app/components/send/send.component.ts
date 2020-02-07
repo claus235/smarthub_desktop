@@ -375,6 +375,7 @@ export class SendComponent implements OnInit {
                     break;
                 default:
                     await this.sendPaymentToday();
+                    break;
             }
             if (!_.isUndefined(this.response) && !_.isUndefined(this.response.txid)) {
                 if (this.response && !this.response.status) {

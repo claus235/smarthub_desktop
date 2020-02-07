@@ -17,7 +17,7 @@ export class WalletService {
 
     async sendPayment(transaction: any): Promise<any> {
 
-        let ret : Promise<any>;
+        let ret: Promise<any>;
         try {
 
 
@@ -38,7 +38,7 @@ export class WalletService {
         } catch (ex) {
             try {
                 ret = this._shared.post("api/Wallet/SendPayment", transaction);
-            } catch (e) { 
+            } catch (e) {
                 throw e;
             }
         }
@@ -74,10 +74,6 @@ export class WalletService {
     //SAPI
     async createAndSendRawTransaction(toAddress: string, amount: number, keyString: string) {
 
-        let satoshi = 100000000;
-
-        let amountSat = satoshi * amount;
-
         let key = smartCash.ECPair.fromWIF(keyString);
 
         let fromAddress = key.getAddress().toString();
@@ -86,17 +82,9 @@ export class WalletService {
 
         let sapiUnspent = await this.getUnspent(fromAddress, amount);
 
-        console.log(`sapiUnspent`)
-
-        console.log(sapiUnspent)
-
         let totalUnspent = _.sumBy(sapiUnspent.utxos, 'amount');
 
-        console.log(`Total Unspent ${totalUnspent}`)
-
         let fee = this.calculateFee(sapiUnspent.utxos);
-
-        console.log(`Fee ${fee}`)
 
         let change = (totalUnspent - amount - fee);
 
@@ -109,11 +97,11 @@ export class WalletService {
         transaction.setLockTime(sapiUnspent.blockHeight);
 
         //SEND TO
-        transaction.addOutput(toAddress, amountSat);
+        transaction.addOutput(toAddress, parseFloat(smartCash.amount(amount.toString()).toString()));
 
         if (change >= fee) {
             //Change TO
-            transaction.addOutput(fromAddress, this.roundUp(change * satoshi, 8));
+            transaction.addOutput(fromAddress, parseFloat(smartCash.amount(change.toString()).toString()));
         }
         else {
             fee = change;
