@@ -51,7 +51,7 @@ export class SettingsExportComponent {
 
             if (Util.isValidObject(this.response) && this.response.isValid) {
                 this._shared.dataStore.recoveryKey.recoveryKey = this.export.recoveryKey;
-                this.exportRequest = await this._shared.exportPrivateKeys(this.response, this._shared.user.username);
+                this.exportRequest = await this._shared.exportPrivateKeys(this.response, this._shared.user.username, null);
                 console.log(this.exportRequest);
                 this.exportHtml = this.exportRequest.toString();
 
