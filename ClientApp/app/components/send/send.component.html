@@ -98,7 +98,6 @@
                            #amount="ngModel"
                            required
                            autocomplete="off"
-                           (ngModelChange)="calculateAmountWithFee($event)"
                            (input)="onAmountChange($event)"
                            (keypress)="onAmountChange($event)"
                            mask='0*.00000000'
@@ -185,7 +184,6 @@
                            #amount="ngModel"
                            required
                            autocomplete="off"
-                           (ngModelChange)="calculateAmountWithFee($event)"
                            mask="0*.0000"
                            [dropSpecialCharacters]="false" />
                 </div>
@@ -267,7 +265,6 @@
                            #amount="ngModel"
                            required
                            autocomplete="off"
-                           (ngModelChange)="calculateAmountWithFee($event)"
                            mask="0*.0000"
                            [dropSpecialCharacters]="false" />
                 </div>
