@@ -359,9 +359,7 @@ export class SharedService {
                 wallet = Object.assign(wallet, balance);
             });
         }
-
         getBalances();
-        setTimeout(getBalances, 60000);
     }
 
     updateGetInfo(response: any, secretKey: string) {

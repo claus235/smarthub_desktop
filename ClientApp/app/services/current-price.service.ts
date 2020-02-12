@@ -27,10 +27,8 @@ export class CurrentPriceService {
                         this._shared.dataStore.currentPrice = model;
                         return model;
                     }).toPromise();
-
-            return await this._shared.dataStore.currentPrice;
         }
-        return await this._shared.dataStore.currentPrice;
+        return this._shared.dataStore.currentPrice;
     }
 
     async getCurrentPriceInExchange() {
