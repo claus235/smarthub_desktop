@@ -54,12 +54,17 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   getTransactionsFromAddress(pageNumber = 0) {
     const getTransaction = async () => {
-      this._spinner.showSpinner();
-      this._transactions = await this._shared.get(
-        `api/wallet/txs/${this.currentWallet.address}/${pageNumber}`
-      );
-      this._shared.updateWalletBalance();
-      this._spinner.hideSpinner();
+      try {
+        this._spinner.showSpinner();
+        this._transactions = await this._shared.get(
+          `api/wallet/txs/${this.currentWallet.address}/${pageNumber}`
+        );
+        this._shared.updateWalletBalance();
+      } catch (e) {
+
+      } finally {
+        this._spinner.hideSpinner();
+      }
     };
     getTransaction();
     this.clearIntervalTransaction();

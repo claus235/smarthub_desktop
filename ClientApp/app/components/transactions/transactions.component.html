@@ -44,6 +44,9 @@
 </div>
 <div class="page-wrapper">
   <div class="filter all-transactions" role="alert">
+    <button (click)="getTransactionsFromAddress()" [disabled]="_spinner.inProgress">
+      <i class="icon-refresh-button" [ngClass]="{'icon-spin': _spinner.inProgress}"></i>
+    </button>
     <button
       *ngFor="let filter of filters"
       [ngClass]="{ active: filterType === filter }"
